@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="/css/adminPanel.css">
+    <script src="/js/adminPanel.js" async></script>
+</head>
+<body>
+<header>
+    <div class="navbar">
+        <button class="menu-btn">☰</button>
+        <img src="/images/logo.png" alt="Logo" class="logo">
+        <div class="profile">
+            <div class="profile-initials">
+                MG
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="users">
+    <section class="filters-section">
+        <ul>
+            <h2>Área de Usuários</h2>
+        </ul>
+        <ul>
+            <div class="filter-buttons">
+                <div class="search-box">
+                    <input type="text" id="search-id" placeholder="Pesquisar Usuários">
+                    <button id="search-button">🔍</button>
+                </div>
+            </div>
+        </ul>
+        <ul>
+            <div class="filter-options">
+                <select>
+                    <option selected>Características - Status</option>
+                    <option>Abertos</option>
+                    <option>Pendentes</option>
+                    <option>Solucionados</option>
+                </select>
+                <select>
+                    <option selected>Mais recente</option>
+                    <option>Alfabética ⬆️</option>
+                    <option>Alfabética ⬇️</option>
+                </select>
+            </div>
+        </ul>
+    </section>
+    <section class="results-section" id="user-results">
+        <div id="user-list">
+
+        </div>
+        <div class="result-item">
+            <p>Nenhum item encontrado</p>
+        </div>
+    </section>
+</main>
+
+<main class="called">
+    <section class="filters-section">
+        <ul>
+            <h2>Área de Chamados</h2>
+        </ul>
+        <ul>
+            <div class="filter-buttons">
+                <button id="open-called">+</button>
+                <div class="search-box">
+                    <input type="text" id="search-id" placeholder="Pesquisar Chamado">
+                    <button id="search-button">🔍</button>
+                </div>
+            </div>
+        </ul>
+        <ul>
+            <div class="filter-options">
+                <select>
+                    <option selected>Características - Status</option>
+                    <option>Abertos</option>
+                    <option>Pendentes</option>
+                    <option>Solucionados</option>
+                </select>
+                <select>
+                    <option selected>Não solucionados</option>
+                    <option>Solucionados</option>
+                </select>
+            </div>
+        </ul>
+    </section>
+
+    <section class="results-section">
+        <div class="result-item">
+            <p>Nenhum item encontrado</p>
+        </div>
+    </section>
+</main>
+<div id="modal-called" class="modal">
+    <div class="modal-content">
+        <span class="close">&times</span>
+        <h2 id="model-title">Cadastro de Chamados</h2>
+        <form>
+            <label for="title">Título:</label><br>
+            <input type="text" id="title" name="title"><br><br>
+            <label for="description">Descrição:</label><br>
+            <textarea id="description" name="description" placeholder="Informe qual o problema está enfrentando"></textarea><br><br>
+            <button type="submit" id="send-call">Enviar</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

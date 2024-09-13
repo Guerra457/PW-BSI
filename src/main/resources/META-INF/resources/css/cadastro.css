@@ -1,0 +1,77 @@
+body {
+    background: linear-gradient(to bottom, #1475E8, #AEF0FE);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+.register-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    height: auto;
+    text-align: center;
+}
+.register-container h2 {
+    margin-bottom: 20px;
+}
+
+.register-container p {
+    text-align: left;
+    margin-bottom: 1px;
+}
+
+.register-container form {
+    margin: 40px;
+
+}
+.register-container input {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 15px;
+}
+.register-container button {
+    width: 101%;
+    margin-top: 10px;
+    padding: 15px;
+    background-color: #D54F58; /* Vermelho */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+}
+.register-container button:hover {
+    background-color: #d21b26;
+}
+
+.register-buttons {
+    margin-top: 30px;
+}
+
+.password-container {
+    position: relative;
+    width: calc(100% - 20px);
+}
+
+.password-container input {
+    width: calc(100% - 30px);
+    padding-right: 40px; /* Espaço para o ícone */
+}
+
+.password-container img {
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    width: 25px; /* Ajuste o tamanho do ícone conforme necessário */
+    height: 25px;
+}

@@ -1,0 +1,262 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+ul{
+    padding: 8px;
+}
+
+textarea {
+    width: 100%; /* Faz o textarea ocupar toda a largura do contêiner pai */
+    height: 150px; /* Altura fixa para o textarea */
+    box-sizing: border-box; /* Inclui padding e bordas na largura e altura */
+    resize: vertical; /* Permite redimensionar apenas na vertical */
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f5f5;
+}
+
+.navbar {
+    background-color: #002d4f;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 50px;
+}
+
+.menu-btn {
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    color: white;
+}
+
+.logo {
+    height: 60px;
+    align-content: center;
+}
+
+.breadcrumb {
+    list-style: none;
+    display: flex;
+    gap: 10px;
+}
+
+.breadcrumb li {
+    display: inline;
+}
+
+.breadcrumb a {
+    color: white;
+    text-decoration: none;
+}
+
+.breadcrumb a i {
+    margin-right: 5px;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+}
+
+.profile-initials {
+    background-color: #5e55d4;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.filter-buttons button {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#open-called, #open-user {
+    background-color: #002d4f;
+    color: white;
+    width: 50px;
+    height: 50px;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#open-called:hover, #open-user:hover {
+    background-color: #004080;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    width: 300px;
+    font-size: 16px;
+}
+
+.search-box input {
+    border: none;
+    padding: 10px;
+    font-size: 18px;
+}
+
+.search-box input::placeholder {
+    font-size: 16px;
+}
+
+#search-id {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    outline: none;
+}
+
+#search-button {
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 28px;
+    line-height: 1;
+}
+
+#search-button:hover {
+    background-color: #004080;
+}
+
+
+.filters-section {
+    margin: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+.filter-options {
+    margin-top: auto;
+    display: flex;
+    gap: 15px;
+}
+
+.filter-options select {
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+.results-section {
+    margin: 20px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+.result-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.result-item p {
+    color: #888;
+}
+
+#modal-called, #modal-user {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4); /* Fundo preto com opacidade */
+}
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* Centraliza o modal */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Largura do modal */
+    max-width: 80%; /* Largura máxima do modal */
+    border-radius: 5px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#send-call, #send-user {
+    background-color: #002d4f;
+    color: white;
+    padding: 10px;
+    width: 120px;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#send-call:hover, #send-user:hover{
+    background-color: #004080;
+}
+
+#title {
+    padding: 10px;
+    font-size: 18px;
+    border-radius: 5px;
+    border: 1px solid #767676;
+    width: 40%;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+#model-title {
+    margin-bottom: 30px;
+}
+
+@media (max-width: 768px) {
+    .modal-content{
+        width: 90%;
+        max-width: 90%;
+        margin: 10% auto;
+    }
+}

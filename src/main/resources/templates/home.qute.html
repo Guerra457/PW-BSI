@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="/css/home.css">
+    <script src="/js/home.js" async></script>
+</head>
+<body>
+<header>
+    <div class="navbar">
+        <button class="menu-btn">☰</button>
+        <img src="/images/logo.png" alt="Logo" class="logo">
+        <div class="profile">
+            <div class="profile-initials">
+                MG
+            </div>
+        </div>
+    </div>
+</header>
+
+<main>
+    <section class="filters-section">
+        <ul>
+            <div class="filter-buttons">
+                <button id="open-called">+</button>
+                <div class="search-box">
+                    <input type="text" id="search-id" placeholder="Pesquisar Chamado">
+                    <button id="search-button">🔍</button>
+                </div>
+            </div>
+        </ul>
+        <ul>
+            <div class="filter-options">
+                <select>
+                    <option selected>Características - Status</option>
+                    <option>Abertos</option>
+                    <option>Pendentes</option>
+                    <option>Solucionados</option>
+                </select>
+                <select>
+                    <option selected>Não solucionados</option>
+                    <option>Solucionados</option>
+                </select>
+            </div>
+        </ul>
+    </section>
+
+    <section class="results-section">
+        <div class="result-item">
+            <p>Nenhum item encontrado</p>
+        </div>
+    </section>
+</main>
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times</span>
+        <h2 id="model-title">Cadastro de Chamados</h2>
+        <form>
+            <label for="title">Título:</label><br>
+            <input type="text" id="title" name="title"><br><br>
+            <label for="description">Descrição:</label><br>
+            <textarea id="description" name="description" placeholder="Informe qual o problema está enfrentando"></textarea><br><br>
+            <button type="submit" id="send-call">Enviar</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
