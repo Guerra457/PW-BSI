@@ -18,12 +18,10 @@ document.getElementById('cadastroForm').addEventListener('submit', function (eve
     event.preventDefault();  // Impede o envio padrão do formulário
 
     const formData = new FormData(this);
-    const data = {
-        nome: formData.get('nome'),
-        cpf: formData.get('cpf'),
-        email: formData.get('email'),
-        senha: formData.get('senha')
-    };
+    const data = {};
+    formData.forEach((value, key) => {
+       data[key] = value;
+    });
 
     fetch('/cadastro', {
         method: 'POST',

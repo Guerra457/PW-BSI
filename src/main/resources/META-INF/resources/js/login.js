@@ -13,3 +13,40 @@ document.getElementById('togglePasswordIcon').addEventListener('click', function
     // Altera o ícone dependendo do estado atual
     icon.src = passwordType === 'password' ? '/images/exibirSenha.png' : '/images/ocultarSenha.png';
 });
+
+document.querySelector('form').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const email = document.getElementById('email').value;
+    const senha = document.getElementById('senha').value;
+
+    fetch('/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: email,
+            senha: senha
+        })
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw new Error(err.message); });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Resposta do servidor: ", data);
+            if (data.success) {
+                // Redireciona para a página correta com base no tipo de usuário
+                window.location.href = data.redirectUrl;
+            } else {
+                alert(data.message || 'Falha no login. Verifique suas credenciais.');
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert('Ocorreu um erro no login.');
+        });
+});

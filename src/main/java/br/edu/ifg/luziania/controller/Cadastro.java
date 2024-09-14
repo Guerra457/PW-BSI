@@ -22,7 +22,7 @@ import static java.util.Objects.requireNonNull;
 @Path("/cadastro")
 public class Cadastro {
 
-    private static final Logger LOG = Logger.getLogger(UsuarioController.class);
+    private static final Logger LOG = Logger.getLogger(Cadastro.class);
 
     private final Template cadastro;
 
@@ -41,31 +41,30 @@ public class Cadastro {
 
     @POST
     @Transactional
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Produces(MediaType.TEXT_HTML)
-    public TemplateInstance cadastrarUsuario(@FormParam("nome") String nome,
-                                     @FormParam("cpf") String cpf,
-                                     @FormParam("email") String email,
-                                     @FormParam("senha") String senha) {
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response cadastrarUsuario(UsuarioDTO usuarioDTO) {
         try {
-            Usuario usuario = new Usuario();
-            usuario.setNome(nome);
-            usuario.setCpf(cpf);
-            usuario.setEmail(email);
-            usuario.setSenha(BCrypt.hashpw(senha, BCrypt.gensalt()));
-            // Converter DTO para entidade
-            // Idealmente criptografar a senha aqui
+            if (usuarioDTO.getTipoUsuario() == null || usuarioDTO.getTipoUsuario().isEmpty()) {
+                TipoUsuario tipoUsuario = usuarioDAO.buscarTipoUsuarioPadrao(); // Define o tipo padrão
+                usuarioDTO.setTipoUsuario(tipoUsuario.getNomeTipo());
+            }
 
-            TipoUsuario tipoUsuario = usuarioDAO.buscarTipoUsuarioPadrao(); // Define o tipo padrão
+            TipoUsuario tipoUsuario = usuarioDAO.buscarTipoUsuarioPadrao();
+
+            Usuario usuario = new Usuario();
+            usuario.setNome(usuarioDTO.getNome());
+            usuario.setCpf(usuarioDTO.getCpf());
+            usuario.setEmail(usuarioDTO.getEmail());
+            usuario.setSenha(BCrypt.hashpw(usuarioDTO.getSenha(), BCrypt.gensalt()));
             usuario.setIdTipoUsuario(tipoUsuario);
 
             usuarioDAO.salvar(usuario); // Salva o usuário no banco de dados
 
-            return cadastro.data("success", true);
+            return Response.ok(Map.of("success", true, "message", "Usuário cadastrado com sucesso!")).build();
         } catch (Exception e) {
-            LOG.error("Erro ao cadastrar usuário", e);
-            //e.printStackTrace();
-            return cadastro.data("success", false).data("error", e.getMessage());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(Map.of("success", false, "error", e.getMessage())).build();
         }
     }
 }

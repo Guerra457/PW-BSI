@@ -38,7 +38,7 @@ public class UsuarioController {
         dto.setCpf(usuario.getCpf());
         dto.setEmail(usuario.getEmail());
         dto.setNome(usuario.getNome());
-        dto.setTipoUsuario(usuario.getIdTipoUsuario().getNomeTipo()); // Supõe que você tenha um relacionamento aqui
+        dto.setTipoUsuario(usuario.getIdTipoUsuario().getNomeTipo());
         return dto;
     }
 }

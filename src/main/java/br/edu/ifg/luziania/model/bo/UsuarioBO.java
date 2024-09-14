@@ -2,6 +2,7 @@ package br.edu.ifg.luziania.model.bo;
 
 import br.edu.ifg.luziania.model.dao.UsuarioDAO;
 import br.edu.ifg.luziania.model.dto.UsuarioDTO;
+import br.edu.ifg.luziania.model.entity.Usuario;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import io.smallrye.jwt.build.Jwt;
@@ -17,12 +18,21 @@ public class UsuarioBO {
 
     public Response autenticarUsuario(String email, String senha) {
         // Buscar o usuário no banco de dados
-        UsuarioDTO usuarioDTO = usuarioDAO.buscarPorEmail(email);
+        Usuario usuario = usuarioDAO.buscarPorEmail(email);
 
-        if (usuarioDTO == null || !BCrypt.checkpw(senha, usuarioDTO.getSenha())) {
+        if (usuario == null || !BCrypt.checkpw(senha, usuario.getSenha())) {
             // Autenticação falhou
             throw new NotAuthorizedException("Email ou senha inválidos");
         }
+
+        UsuarioDTO usuarioDTO = new UsuarioDTO(
+                usuario.getIdUsuario(),
+                usuario.getCpf(),
+                usuario.getEmail(),
+                usuario.getSenha(),
+                usuario.getNome(),
+                usuario.getIdTipoUsuario().getNomeTipo()
+        );
 
         // Gerar o token JWT se a autenticação for bem-sucedida
         String token = Jwt.issuer("your-issuer")
