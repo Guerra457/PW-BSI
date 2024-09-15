@@ -128,7 +128,7 @@ body {
     font-size: 16px;
 }
 
-#search-id {
+.search-class {
     flex: 1;
     padding: 10px;
     border: none;
@@ -222,7 +222,7 @@ body {
     cursor: pointer;
 }
 
-#send-call, #send-user {
+.button-generic {
     background-color: #002d4f;
     color: white;
     padding: 10px;
@@ -235,7 +235,7 @@ body {
     cursor: pointer;
 }
 
-#send-call:hover, #send-user:hover{
+.button-generic:hover{
     background-color: #004080;
 }
 
@@ -249,7 +249,7 @@ body {
     margin-bottom: 20px;
 }
 
-#model-title {
+.model-title {
     margin-bottom: 30px;
 }
 
@@ -260,3 +260,53 @@ body {
         margin: 10% auto;
     }
 }
+
+#user-list {
+    display: flex;
+    flex-direction: column; /* Exibe os itens em coluna */
+    gap: 10px; /* Espaço entre os itens */
+    padding: 20px;
+}
+
+.user-item {
+    background-color: #fff; /* Fundo branco para cada item */
+    border: 1px solid #ddd; /* Borda leve para separação */
+    border-radius: 8px; /* Bordas arredondadas */
+    padding: 15px; /* Espaçamento interno */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra leve */
+    transition: background-color 0.3s; /* Transição suave para a cor de fundo */
+}
+
+.user-item:hover {
+    background-color: #f0f8ff; /* Cor de fundo ao passar o mouse */
+}
+
+.user-item p {
+    margin: 5px 0; /* Margem entre os parágrafos */
+}
+
+.user-item p strong {
+    display: inline-block;
+    width: 150px; /* Largura fixa para rótulos */
+    color: #333; /* Cor do texto dos rótulos */
+}
+
+.user-buttons {
+    margin-top: 10px;
+}
+
+.user-buttons button {
+    background-color: #002d4f;
+    color: white;
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+.user-buttons button:hover {
+    background-color: #004080;
+}
+

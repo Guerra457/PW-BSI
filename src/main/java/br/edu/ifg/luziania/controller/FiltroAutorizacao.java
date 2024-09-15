@@ -1,5 +1,6 @@
 package br.edu.ifg.luziania.controller;
 
+import br.edu.ifg.luziania.model.bo.UsuarioBO;
 import br.edu.ifg.luziania.model.dao.UsuarioDAO;
 import br.edu.ifg.luziania.model.dto.UsuarioDTO;
 import io.smallrye.jwt.build.Jwt;
@@ -15,12 +16,17 @@ import jakarta.ws.rs.ext.Provider;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import java.io.IOException;
+import java.security.Principal;
+import java.util.Set;
 
 @Provider
 @Priority(Priorities.AUTHENTICATION)
 public class FiltroAutorizacao implements ContainerRequestFilter {
     @Inject
-    private UsuarioDAO usuarioDAO;
+    private UsuarioBO usuarioBO;
+
+    @Inject
+    JsonWebToken jwt;
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -33,21 +39,66 @@ public class FiltroAutorizacao implements ContainerRequestFilter {
         }
 
         String token = requestContext.getHeaderString("Authorization");
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);  // Remove "Bearer " do início do token
+            System.out.println("Token recebido: " + token);
+        } else {
+            System.out.println("Token não encontrado ou inválido");
+            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
+            return;
+        }
 
-        if (token == null || !tokenValido(token)) {
+        UsuarioDTO usuario;
+        try {
+            usuario = usuarioBO.obterUsuarioDoToken(token);
+        }catch (Exception e) {
+            System.out.println("Token invçaido ou erro ao obter usuário: " + e.getMessage());
+            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
+            return;
+        }
+
+        SecurityContext originalContext = requestContext.getSecurityContext();
+        requestContext.setSecurityContext(new SecurityContext() {
+            @Override
+            public Principal getUserPrincipal() {
+                return new Principal() {
+                    @Override
+                    public String getName() {
+                        return usuario.getEmail();
+                    }
+                };
+            }
+
+            @Override
+            public boolean isUserInRole(String role) {
+                return usuario.getTipoUsuario().equals(role);
+            }
+
+            @Override
+            public boolean isSecure() {
+                return originalContext.isSecure();
+            }
+
+            @Override
+            public String getAuthenticationScheme() {
+                return "Bearer";
+            }
+        });
+
+
+        if (jwt == null || !tokenValido(token)) {
             requestContext.abortWith(Response.seeOther(java.net.URI.create("/login")).build());
             return;
         }
 
-        UsuarioDTO usuario = getUsuarioDoToken(token);
-
-        if (!temAcesso(usuario, requestContext.getUriInfo().getPath())) {
+        if (!temAcesso(usuario, path)) {
+            System.out.println("Usuário sem permissão para acessar a página: " + path);
             requestContext.abortWith(Response.status(Response.Status.FORBIDDEN).build());
         }
     }
 
     private boolean paginaPublica(String path) {
-        return path.equals("/login") || path.equals("/cadastro");
+        return path.equals("/login") || path.equals("/cadastro") || path.equals("/home") || path.equals("/chamados") || path.equals("/adminPanel") || path.equals("/usuarios");
     }
 
     private boolean temAcesso(UsuarioDTO usuario, String path) {
@@ -65,16 +116,9 @@ public class FiltroAutorizacao implements ContainerRequestFilter {
 
     private boolean tokenValido(String token) {
         try {
-            String jwtToken = token.replace("Bearer ", "");
-            JsonWebToken jwt = Jwt.issuer("your-issuer").decode(jwtToken);
-            return jwt != null;
+            return jwt != null && jwt.getClaim("sub") != null;  // Verifica se existe um claim 'sub'
         } catch (Exception e) {
             return false;
         }
-    }
-
-    private UsuarioDTO getUsuarioDoToken(String token) {
-        // Lógica para extrair o usuário do token
-        return new UsuarioDTO();
     }
 }

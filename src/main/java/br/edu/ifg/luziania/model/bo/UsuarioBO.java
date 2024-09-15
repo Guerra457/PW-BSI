@@ -10,11 +10,18 @@ import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.jwt.Claims;
+import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.eclipse.microprofile.jwt.Claims;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.mindrot.jbcrypt.BCrypt;
 @ApplicationScoped
 public class UsuarioBO {
     @Inject
     private UsuarioDAO usuarioDAO;
+
+    @Inject
+    private JsonWebToken jsonWebToken;
 
     public Response autenticarUsuario(String email, String senha) {
         // Buscar o usuário no banco de dados
@@ -48,6 +55,20 @@ public class UsuarioBO {
                 .build();
     }
 
+    public UsuarioDTO obterUsuarioDoToken(String token) {
+        try {
+            // Parse o token JWT usando o JsonWebToken
+            JsonWebToken jwt = jsonWebToken;
+
+            UsuarioDTO usuario = new UsuarioDTO();
+            usuario.setEmail(jwt.getName()); // .getName() geralmente retorna o UPN (email) do token
+            usuario.setNome(jwt.getClaim(Claims.full_name)); // Obtenha o nome do claim
+            usuario.setTipoUsuario(jwt.getClaim(Claims.groups)); // Obtenha o tipo de usuário ou permissões do claim
+            return usuario;
+        } catch (Exception e) {
+            throw new NotAuthorizedException("Token inválido");
+        }
+    }
     public void salvarUsuario(UsuarioDTO usuarioDTO) {
         if (usuarioDTO == null || usuarioDTO.getEmail() == null || usuarioDTO.getEmail().isEmpty()) {
             throw new IllegalArgumentException("Usuário ou email não pode ser nulo ou vazio");

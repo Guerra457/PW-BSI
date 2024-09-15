@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel</title>
     <link rel="stylesheet" href="/css/adminPanel.css">
-    <script src="/js/adminPanel.js" async></script>
+    <script src="/js/adminPanel.js"></script>
 </head>
 <body>
 <header>
@@ -28,7 +28,7 @@
         <ul>
             <div class="filter-buttons">
                 <div class="search-box">
-                    <input type="text" id="search-id" placeholder="Pesquisar Usuários">
+                    <input type="text" class="search-class" placeholder="Pesquisar Usuários">
                     <button id="search-button">🔍</button>
                 </div>
             </div>
@@ -38,6 +38,7 @@
                 <select>
                     <option selected>Características - Status</option>
                     <option>Abertos</option>
+                    <option>Em atendimento</option>
                     <option>Pendentes</option>
                     <option>Solucionados</option>
                 </select>
@@ -68,7 +69,7 @@
             <div class="filter-buttons">
                 <button id="open-called">+</button>
                 <div class="search-box">
-                    <input type="text" id="search-id" placeholder="Pesquisar Chamado">
+                    <input type="text" class="search-class" placeholder="Pesquisar Chamado">
                     <button id="search-button">🔍</button>
                 </div>
             </div>
@@ -97,15 +98,45 @@
 </main>
 <div id="modal-called" class="modal">
     <div class="modal-content">
-        <span class="close">&times</span>
-        <h2 id="model-title">Cadastro de Chamados</h2>
+        <span class="close">&times;</span>
+        <h2 class="model-title">Cadastro de Chamados</h2>
         <form>
             <label for="title">Título:</label><br>
             <input type="text" id="title" name="title"><br><br>
             <label for="description">Descrição:</label><br>
             <textarea id="description" name="description" placeholder="Informe qual o problema está enfrentando"></textarea><br><br>
-            <button type="submit" id="send-call">Enviar</button>
+            <button type="submit" class="button-generic">Enviar</button>
         </form>
+    </div>
+</div>
+<div id="modal-update" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 class="model-title">Atualizar Usuário</h2>
+        <form>
+            <label for="name">Nome:</label><br>
+            <input type="text" id="attName"><br><br>
+            <label for="cpf">CPF:</label><br>
+            <input type="text" id="attCPF"><br><br>
+            <label for="email">E-mail:</label><br>
+            <input type="text" id="attEmail"><br><br>
+            <label for="userType">Tipo de Usuário:</label><br>
+            <select>
+                <option>Usuário</option>
+                <option>Atendente</option>
+                <option>Administrador</option>
+            </select><br><br>
+            <button type="submit" class="button-generic">Salvar</button>
+        </form>
+    </div>
+</div>
+<div id="modal-delete" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 class="model-title">Excluir Usuário</h2>
+        <p>Tem certeza que deseja excluir esse usuário ?</p>
+        <button type="submit" class="button-generic">Sim</button>
+        <button type="reset" class="button-generic">Não</button>
     </div>
 </div>
 </body>
