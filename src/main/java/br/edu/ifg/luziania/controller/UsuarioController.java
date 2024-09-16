@@ -38,7 +38,21 @@ public class UsuarioController {
         dto.setCpf(usuario.getCpf());
         dto.setEmail(usuario.getEmail());
         dto.setNome(usuario.getNome());
-        dto.setTipoUsuario(usuario.getIdTipoUsuario().getNomeTipo());
+        dto.setTipoUsuario(usuario.getTipoUsuario().getNomeTipo());
         return dto;
+    }
+
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response listarUsuariosPorId(@PathParam("id") long id){
+        LOG.info("Buscando usuário com Id: " + id);
+
+        Usuario usuario = usuarioDAO.buscarPorId(id);
+        if (usuario != null) {
+            return Response.ok(toDTO(usuario)).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
     }
 }

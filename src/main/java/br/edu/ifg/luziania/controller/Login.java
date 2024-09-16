@@ -46,7 +46,7 @@ public class Login {
             if (BCrypt.checkpw(usuarioDTO.getSenha(), usuario.getSenha())) {
                 // Verifica o tipo de usuário e retorna o endpoint correspondente
                 String redirectUrl;
-                switch (usuario.getIdTipoUsuario().getNomeTipo()) {
+                switch (usuario.getTipoUsuario().getNomeTipo()) {
                     case "Administrador":
                         redirectUrl = "/adminPanel";
                         break;

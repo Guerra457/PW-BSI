@@ -25,9 +25,9 @@ public class UsuarioDAO {
     @Transactional
     public void salvar(Usuario usuario) {
         try {
-            if (usuario.getIdTipoUsuario() == null) {
+            if (usuario.getTipoUsuario() == null) {
                 TipoUsuario tipoPadrao = buscarTipoUsuarioPadrao();
-                usuario.setIdTipoUsuario(tipoPadrao);
+                usuario.setTipoUsuario(tipoPadrao);
             }
             em.persist(usuario);
         } catch (Exception e) {
@@ -60,6 +60,11 @@ public class UsuarioDAO {
     }
 
     @Transactional
+    public Usuario buscarPorId(Long id) {
+        return em.find(Usuario.class, id);
+    }
+
+    @Transactional
     // Método para listar todos os usuários
     public List<Usuario> listarTodos() {
         return em.createQuery("SELECT u FROM Usuario u", Usuario.class).getResultList();
@@ -75,17 +80,14 @@ public class UsuarioDAO {
         }catch (NoResultException e) {
             return null;
         }
+    }
 
-        /*Usuario usuario = query.getSingleResult();
-
-        return new UsuarioDTO(
-                usuario.getIdUsuario(),
-                usuario.getCpf(),
-                usuario.getEmail(),
-                usuario.getSenha(),
-                usuario.getNome(),
-                usuario.getIdTipoUsuario().getNomeTipo()
-        );*/
+    @Transactional
+    public Usuario buscarPorEmailESenha(String email, String senha) {
+        Query query = em.createQuery("SELECT u FROM Usuario u WHERE u.email = :email and u.senha = :senha", Usuario.class);
+        query.setParameter("email", email);
+        query.setParameter("senha", senha);
+        return (Usuario) query.getSingleResult();
     }
 
     @Transactional

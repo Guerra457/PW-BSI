@@ -57,7 +57,7 @@ public class Cadastro {
             usuario.setCpf(usuarioDTO.getCpf());
             usuario.setEmail(usuarioDTO.getEmail());
             usuario.setSenha(BCrypt.hashpw(usuarioDTO.getSenha(), BCrypt.gensalt()));
-            usuario.setIdTipoUsuario(tipoUsuario);
+            usuario.setTipoUsuario(tipoUsuario);
 
             usuarioDAO.salvar(usuario); // Salva o usuário no banco de dados
 

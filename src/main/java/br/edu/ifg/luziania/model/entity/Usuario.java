@@ -17,8 +17,8 @@ public class Usuario {
     @Column(nullable = false)
     private String senha;
     @ManyToOne
-    @JoinColumn(name = "idTipoUsuario", nullable = false)
-    private TipoUsuario idTipoUsuario;
+    @JoinColumn(name = "idTipoUsuario", referencedColumnName = "idTipoUsuario", nullable = false)
+    private TipoUsuario tipoUsuario;
 
     public int getIdUsuario() {
         return idUsuario;
@@ -60,11 +60,11 @@ public class Usuario {
         this.senha = senha;
     }
 
-    public TipoUsuario getIdTipoUsuario() {
-        return idTipoUsuario;
+    public TipoUsuario getTipoUsuario() {
+        return tipoUsuario;
     }
 
-    public void setIdTipoUsuario(TipoUsuario idTipoUsuario) {
-        this.idTipoUsuario = idTipoUsuario;
+    public void setTipoUsuario(TipoUsuario tipoUsuario) {
+        this.tipoUsuario = tipoUsuario;
     }
 }

@@ -20,87 +20,88 @@
     </div>
 </header>
 
-<main class="users">
-    <section class="filters-section">
-        <ul>
-            <h2>Área de Usuários</h2>
-        </ul>
-        <ul>
-            <div class="filter-buttons">
-                <div class="search-box">
-                    <input type="text" class="search-class" placeholder="Pesquisar Usuários">
-                    <button id="search-button">🔍</button>
+<main class="admin-dashboard">
+    <div class="user-area">
+        <section class="filters-section">
+            <ul>
+                <h2>Área de Usuários</h2>
+            </ul>
+            <ul>
+                <div class="filter-buttons">
+                    <div class="search-box">
+                        <input type="text" class="search-class" placeholder="Pesquisar Usuários">
+                        <button id="search-button">🔍</button>
+                    </div>
                 </div>
-            </div>
-        </ul>
-        <ul>
-            <div class="filter-options">
-                <select>
-                    <option selected>Características - Status</option>
-                    <option>Abertos</option>
-                    <option>Em atendimento</option>
-                    <option>Pendentes</option>
-                    <option>Solucionados</option>
-                </select>
-                <select>
-                    <option selected>Mais recente</option>
-                    <option>Alfabética ⬆️</option>
-                    <option>Alfabética ⬇️</option>
-                </select>
-            </div>
-        </ul>
-    </section>
-    <section class="results-section" id="user-results">
-        <div id="user-list">
-
-        </div>
-        <div class="result-item">
-            <p>Nenhum item encontrado</p>
-        </div>
-    </section>
-</main>
-
-<main class="called">
-    <section class="filters-section">
-        <ul>
-            <h2>Área de Chamados</h2>
-        </ul>
-        <ul>
-            <div class="filter-buttons">
-                <button id="open-called">+</button>
-                <div class="search-box">
-                    <input type="text" class="search-class" placeholder="Pesquisar Chamado">
-                    <button id="search-button">🔍</button>
+            </ul>
+            <ul>
+                <div class="filter-options">
+                    <select>
+                        <option selected>Status</option>
+                        <option>Abertos</option>
+                        <option>Em atendimento</option>
+                        <option>Pendentes</option>
+                        <option>Solucionados</option>
+                    </select>
+                    <select>
+                        <option selected>Recentes</option>
+                        <option>Alfabética ⬆️</option>
+                        <option>Alfabética ⬇️</option>
+                    </select>
                 </div>
-            </div>
-        </ul>
-        <ul>
-            <div class="filter-options">
-                <select>
-                    <option selected>Características - Status</option>
-                    <option>Abertos</option>
-                    <option>Pendentes</option>
-                    <option>Solucionados</option>
-                </select>
-                <select>
-                    <option selected>Não solucionados</option>
-                    <option>Solucionados</option>
-                </select>
-            </div>
-        </ul>
-    </section>
+            </ul>
+        </section>
+        <section class="results-section" id="user-results">
+            <div id="user-list">
 
-    <section class="results-section">
-        <div class="result-item">
-            <p>Nenhum item encontrado</p>
-        </div>
-    </section>
+            </div>
+            <div class="result-item">
+                <p>Nenhum item encontrado</p>
+            </div>
+        </section>
+    </div>
+    <div class="called-area">
+        <section class="filters-section">
+            <ul>
+                <h2>Área de Chamados</h2>
+            </ul>
+            <ul>
+                <div class="filter-buttons">
+                    <button id="open-called">+</button>
+                    <div class="search-box">
+                        <input type="text" class="search-class" placeholder="Pesquisar Chamado">
+                        <button id="search-button">🔍</button>
+                    </div>
+                </div>
+            </ul>
+            <ul>
+                <div class="filter-options">
+                    <select>
+                        <option selected>Características - Status</option>
+                        <option>Abertos</option>
+                        <option>Pendentes</option>
+                        <option>Solucionados</option>
+                    </select>
+                    <select>
+                        <option selected>Não solucionados</option>
+                        <option>Solucionados</option>
+                    </select>
+                </div>
+            </ul>
+        </section>
+        <section class="results-section">
+            <div class="result-item">
+                <p>Nenhum item encontrado</p>
+            </div>
+        </section>
+    </div>
 </main>
 <div id="modal-called" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
         <h2 class="model-title">Cadastro de Chamados</h2>
-        <form>
+        <div id="message" style="display: none"></div>
+        <form method="post" action="/chamados" id="cadastroChamadosForm">
             <label for="title">Título:</label><br>
             <input type="text" id="title" name="title"><br><br>
             <label for="description">Descrição:</label><br>

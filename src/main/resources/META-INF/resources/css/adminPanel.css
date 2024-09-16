@@ -93,7 +93,7 @@ body {
     cursor: pointer;
 }
 
-#open-called, #open-user {
+#open-called {
     background-color: #002d4f;
     color: white;
     width: 50px;
@@ -104,7 +104,7 @@ body {
     align-items: center;
 }
 
-#open-called:hover, #open-user:hover {
+#open-called:hover {
     background-color: #004080;
 }
 
@@ -188,7 +188,7 @@ body {
     color: #888;
 }
 
-#modal-called, #modal-user {
+#modal-called, #modal-update, #modal-delete {
     display: none;
     position: fixed;
     z-index: 1;
@@ -253,7 +253,24 @@ body {
     margin-bottom: 30px;
 }
 
+.admin-dashboard {
+    display: flex;
+    justify-content: space-between; /* Para espaçar igualmente entre os itens */
+    gap: 20px; /* Espaçamento entre as áreas */
+    padding: 20px;
+}
+
+/* Define o tamanho das seções */
+.users-area, .called-area {
+    flex: 1; /* Faz com que ambos ocupem o mesmo espaço */
+    border: 1px solid #ccc;
+    padding: 20px;
+}
+
 @media (max-width: 768px) {
+    .admin-dashboard{
+        flex-direction: column;
+    }
     .modal-content{
         width: 90%;
         max-width: 90%;
@@ -309,4 +326,39 @@ body {
 .user-buttons button:hover {
     background-color: #004080;
 }
+
+#modal-delete .modal-content {
+    width: 45%; /* Diminui a largura do modal */
+    max-width: 45%; /* Define um limite máximo de largura */
+}
+
+#modal-delete .button-generic {
+    width: 80px; /* Diminui a largura dos botões */
+    margin: 10px; /* Adiciona margem entre os botões */
+    display: inline-block; /* Faz com que os botões sejam exibidos um ao lado do outro */
+}
+
+#modal-delete .modal-content {
+    text-align: center; /* Centraliza o conteúdo no modal */
+}
+
+#modal-delete .modal-content p {
+    margin-bottom: 20px; /* Adiciona espaço abaixo do texto */
+}
+
+#modal-update input,
+#modal-update select {
+    width: 50%; /* Faz os campos ocuparem toda a largura disponível */
+    padding: 10px; /* Adiciona espaçamento interno */
+    font-size: 18px; /* Define o tamanho da fonte */
+    border: 1px solid #ccc; /* Define uma borda consistente */
+    border-radius: 5px; /* Bordas arredondadas */
+    margin-bottom: 15px; /* Espaçamento entre os campos */
+    box-sizing: border-box; /* Inclui padding na largura e altura */
+}
+
+#modal-update input::placeholder {
+    font-size: 16px; /* Define o tamanho da fonte do placeholder */
+}
+
 

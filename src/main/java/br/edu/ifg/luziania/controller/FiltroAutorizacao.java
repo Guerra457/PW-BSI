@@ -21,14 +21,14 @@ import java.util.Set;
 
 @Provider
 @Priority(Priorities.AUTHENTICATION)
-public class FiltroAutorizacao implements ContainerRequestFilter {
+public class FiltroAutorizacao {
     @Inject
     private UsuarioBO usuarioBO;
 
     @Inject
     JsonWebToken jwt;
 
-    @Override
+    /*@Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         String path = requestContext.getUriInfo().getPath();
 
@@ -95,10 +95,10 @@ public class FiltroAutorizacao implements ContainerRequestFilter {
             System.out.println("Usuário sem permissão para acessar a página: " + path);
             requestContext.abortWith(Response.status(Response.Status.FORBIDDEN).build());
         }
-    }
+    }*/
 
     private boolean paginaPublica(String path) {
-        return path.equals("/login") || path.equals("/cadastro") || path.equals("/home") || path.equals("/chamados") || path.equals("/adminPanel") || path.equals("/usuarios");
+        return path.equals("/login") || path.equals("/cadastro")  || path.equals("/chamados") || path.equals("/usuarios");
     }
 
     private boolean temAcesso(UsuarioDTO usuario, String path) {
