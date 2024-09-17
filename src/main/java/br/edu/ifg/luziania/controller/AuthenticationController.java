@@ -7,19 +7,21 @@ import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @Path("/")
 public class AuthenticationController {
 
-    @Inject
-    UsuarioBO usuarioBO;
-
     @GET
     public Response redirecionamentoLogin(){
         return Response.status(Response.Status.FOUND).header("Location", "/login").build();
     }
+
+    @Inject
+    private UsuarioBO usuarioBO;
 
     @POST
     @Path("autenticarUsuario")
@@ -33,7 +35,7 @@ public class AuthenticationController {
     @Path("deslogar")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deslogar() {
+    public Response deslogar(@Context HttpHeaders headers) {
         return usuarioBO.deslogar();
     }
 }

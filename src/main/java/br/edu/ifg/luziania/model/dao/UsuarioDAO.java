@@ -73,14 +73,15 @@ public class UsuarioDAO {
     @Transactional
     // Método para buscar um usuário por email
     public Usuario buscarPorEmail(String email) {
-        TypedQuery<Usuario> query = em.createQuery("SELECT u FROM Usuario u WHERE u.email = :email", Usuario.class);
-        query.setParameter("email", email);
         try {
-            return query.getSingleResult();
-        }catch (NoResultException e) {
+            return em.createQuery("SELECT u FROM Usuario u WHERE u.email = :email", Usuario.class)
+                    .setParameter("email", email)
+                    .getSingleResult();
+        } catch (NoResultException e) {
             return null;
         }
     }
+
 
     @Transactional
     public Usuario buscarPorEmailESenha(String email, String senha) {

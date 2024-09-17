@@ -1,5 +1,6 @@
 package br.edu.ifg.luziania.model.util;
 
+import br.edu.ifg.luziania.model.entity.Usuario;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 
@@ -12,19 +13,19 @@ import java.util.List;
 public class Sessao implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private String usuario;
+    private Usuario usuario;
     private List<String> permissoes;
 
     public Sessao() {
-        this.usuario = "";
+        this.usuario = null;
         this.permissoes = new ArrayList<>();
     }
 
-    public String getUsuario() {
+    public Usuario getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(String usuario) {
+    public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
 

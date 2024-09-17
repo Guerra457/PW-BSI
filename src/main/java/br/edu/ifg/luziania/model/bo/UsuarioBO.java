@@ -36,9 +36,11 @@ public class UsuarioBO {
         RespostaStatusDTO respostaStatusDTO = new RespostaStatusDTO();
 
         if (nonNull(autenticacaoDTO)){
-            Usuario usuario = usuarioDAO.buscarPorEmailESenha(autenticacaoDTO.getEmail(), autenticacaoDTO.getSenha());
-            if (nonNull(usuario)) {
-                sessao.setUsuario(usuario.getNome());
+            Usuario usuario = usuarioDAO.buscarPorEmail(autenticacaoDTO.getEmail());
+            if (usuario != null && BCrypt.checkpw(autenticacaoDTO.getSenha(), usuario.getSenha())) {
+                sessao.setUsuario(usuario);
+                System.out.println("Sessão criada para o usuário: " + sessao.getUsuario().getNome());
+
                 respostaStatusDTO.setMensagem("Bem vindo " + usuario.getNome() + "!");
                 respostaStatusDTO.setStatusResposta(200);
 
@@ -61,13 +63,16 @@ public class UsuarioBO {
     public Response deslogar() {
         RespostaStatusDTO respostaStatusDTO = new RespostaStatusDTO();
         sessao.clearSession();
+        System.out.println("Sessão após logout: " + sessao.getUsuario());
         if (!nonNull(sessao.getUsuario())) {
             respostaStatusDTO.setMensagem("Deslogado com sucesso");
             respostaStatusDTO.setStatusResposta(200);
             respostaStatusDTO.setUrl("/");
             return Response.ok(respostaStatusDTO).build();
         } else {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Opss! Houve um erro no servidor, não foi possível deslogar, tente novamente mais tarde.").build();
+            respostaStatusDTO.setMensagem("Opss! Houve um erro no servidor, não foi possível deslogar, tente novamente mais tarde.");
+            respostaStatusDTO.setStatusResposta(400);
+            return Response.status(Response.Status.BAD_REQUEST).entity(respostaStatusDTO).build();
         }
     }
 
@@ -96,6 +101,7 @@ public class UsuarioBO {
 
         Usuario usuario = new Usuario();
         usuario.setNome(usuarioDTO.getNome());
+        usuario.setCpf(usuarioDTO.getCpf());
         usuario.setEmail(usuarioDTO.getEmail());
         usuario.setSenha(senhaHash);
 

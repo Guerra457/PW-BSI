@@ -20,14 +20,14 @@ document.querySelector('form').addEventListener('submit', function (event) {
     const email = document.getElementById('email').value;
     const senha = document.getElementById('senha').value;
 
-    fetch('/login', {
+    fetch('/autenticarUsuario', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            email: email,
-            senha: senha
+            email: document.getElementById('email').value,
+            senha: document.getElementById('senha').value
         })
     })
         .then(response => {
@@ -38,9 +38,9 @@ document.querySelector('form').addEventListener('submit', function (event) {
         })
         .then(data => {
             console.log("Resposta do servidor: ", data);
-            if (data.success) {
+            if (data.statusResposta === 200) {
                 // Redireciona para a página correta com base no tipo de usuário
-                window.location.href = data.redirectUrl;
+                window.location.href = data.url;
             } else {
                 alert(data.message || 'Falha no login. Verifique suas credenciais.');
             }

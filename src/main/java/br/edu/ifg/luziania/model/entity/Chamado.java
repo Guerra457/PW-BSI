@@ -10,9 +10,9 @@ public class Chamado {
     private int idChamado;
     @Column(nullable = false)
     private String titulo;
-    @Column(nullable = false)
+    @Column(name = "descricao", nullable = false)
     private String descricao;
-    @Column(nullable = false)
+    @Column
     private String comentario;
     @ManyToOne
     @JoinColumn(name = "idSolicitante", nullable = false)

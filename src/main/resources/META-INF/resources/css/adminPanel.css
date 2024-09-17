@@ -66,7 +66,7 @@ body {
     align-items: center;
 }
 
-.profile-initials {
+#profile-initials {
     background-color: #5e55d4;
     color: white;
     width: 40px;
@@ -361,4 +361,21 @@ body {
     font-size: 16px; /* Define o tamanho da fonte do placeholder */
 }
 
+.logout-menu {
+    position: absolute;
+    top: 50px;
+    right: 10px;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
 
+.logout-menu button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
