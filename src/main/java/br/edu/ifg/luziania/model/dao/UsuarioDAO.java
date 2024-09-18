@@ -39,8 +39,18 @@ public class UsuarioDAO {
     public void atualizar(Usuario usuario) {
         try {
             if (usuario != null) {
-                em.merge(usuario);
-                LOG.info("Usuário atualizado com sucesso: " + usuario.getNome());
+                Usuario usuarioExistente = em.find(Usuario.class, usuario.getIdUsuario());
+                if (usuarioExistente != null) {
+                    usuarioExistente.setNome(usuario.getNome());
+                    usuarioExistente.setEmail(usuario.getEmail());
+                    usuarioExistente.setCpf(usuario.getCpf());
+                    usuarioExistente.setTipoUsuario(usuario.getTipoUsuario());
+
+                    usuarioExistente = em.merge(usuarioExistente);
+                    LOG.info("Usuário atualizado com sucesso: " + usuarioExistente.getNome());
+                } else {
+                    LOG.error("Usuário para atualização não encontrado");
+                }
             } else {
                 LOG.error("Usuário para atualização não pode ser nulo");
             }
@@ -49,6 +59,7 @@ public class UsuarioDAO {
             throw e;
         }
     }
+
 
     @Transactional
     public void excluir(int idUsuario) {
@@ -69,12 +80,44 @@ public class UsuarioDAO {
 
     @Transactional
     public Usuario buscarPorCPF(String cpf) {
-        return em.find(Usuario.class, cpf);
+        try {
+            return em.createQuery("SELECT u FROM Usuario u WHERE u.cpf = :cpf", Usuario.class)
+                    .setParameter("cpf", cpf)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;  // Caso não encontre nenhum usuário com o CPF
+        }
     }
 
     @Transactional
-    public Usuario buscarPorId(int id) {
-        return em.find(Usuario.class, id);
+    public boolean existeCpf(String cpf, int idUsuario) {
+        try {
+            Long count = em.createQuery("SELECT COUNT(u) FROM Usuario u WHERE u.cpf = :cpf AND u.idUsuario <> :idUsuario", Long.class)
+                    .setParameter("cpf", cpf)
+                    .setParameter("idUsuario", idUsuario)
+                    .getSingleResult();
+            return count > 0;
+        } catch (NoResultException e) {
+            return false;
+        }
+    }
+
+    @Transactional
+    public boolean existeEmail(String email, int idUsuario) {
+        // Verifique se o email está em uso, mas exclua o usuário atual da verificação
+        Long count = em.createQuery("SELECT COUNT(u) FROM Usuario u WHERE u.email = :email AND u.idUsuario <> :idUsuario", Long.class)
+                .setParameter("email", email)
+                .setParameter("idUsuario", idUsuario)
+                .getSingleResult();
+        return count > 0;
+    }
+
+
+
+
+    @Transactional
+    public Usuario buscarPorId(int idUsuario) {
+        return em.find(Usuario.class, idUsuario);
     }
 
     @Transactional

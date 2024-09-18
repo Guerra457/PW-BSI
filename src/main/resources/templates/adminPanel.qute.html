@@ -120,18 +120,18 @@
     <div class="modal-content">
         <span class="close">&times;</span>
         <h2 class="model-title">Atualizar Usuário</h2>
-        <form>
+        <form id="update-user-form">
             <label for="name">Nome:</label><br>
-            <input type="text" id="attName"><br><br>
+            <input type="text" id="attName" required><br><br>
             <label for="cpf">CPF:</label><br>
-            <input type="text" id="attCPF"><br><br>
+            <input type="text" id="attCPF" required><br><br>
             <label for="email">E-mail:</label><br>
-            <input type="text" id="attEmail"><br><br>
+            <input type="text" id="attEmail" required><br><br>
             <label for="userType">Tipo de Usuário:</label><br>
-            <select>
-                <option>Usuário</option>
-                <option>Atendente</option>
-                <option>Administrador</option>
+            <select id="attUserType">
+                <option value="Usuário">Usuário</option>
+                <option value="Atendente">Atendente</option>
+                <option value="Administrador">Administrador</option>
             </select><br><br>
             <button type="submit" class="button-generic">Salvar</button>
         </form>

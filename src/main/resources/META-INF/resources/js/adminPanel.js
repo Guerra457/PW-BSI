@@ -138,42 +138,41 @@ function associarEventosModal() {
 
     Array.from(updateButtons).forEach(button => {
         button.onclick = function() {
-            var userId = this.getAttribute("data-id");
-            carregarDadosUsuario(userId);
+            userIdToUpdate = this.getAttribute("data-id");
+            carregarDadosUsuario(userIdToUpdate);
             modalUpdate.style.display = "block";
         };
     });
 
-    if (!window.deletingUser) {
-        Array.from(deleteButtons).forEach(button => {
-            button.onclick = function() {
-                var userId = this.getAttribute("data-id");
-                modalDelete.style.display = "block";
-                // Atualiza o data-id do botão de confirmação
-                var deleteButton = document.getElementById('confirm-delete');
-                deleteButton.setAttribute('data-id', userId);
-                window.deletinUser = true;
-            };
-        });
 
-        // Eventos para fechar os modais
-        spanUpdate.onclick = function () {
+    Array.from(deleteButtons).forEach(button => {
+        button.onclick = function() {
+            var userId = this.getAttribute("data-id");
+            modalDelete.style.display = "block";
+            // Atualiza o data-id do botão de confirmação
+            var deleteButton = document.getElementById('confirm-delete');
+            deleteButton.setAttribute('data-id', userId);
+        };
+    });
+
+    // Eventos para fechar os modais
+    spanUpdate.onclick = function () {
+        modalUpdate.style.display = "none";
+    }
+
+    spanDelete.onclick = function () {
+        modalDelete.style.display = "none";
+    }
+
+    // Fechar o modal ao clicar fora dele
+    window.onclick = function(event) {
+        if (event.target === modalUpdate) {
             modalUpdate.style.display = "none";
-        }
-
-        spanDelete.onclick = function () {
+        } else if (event.target === modalDelete) {
             modalDelete.style.display = "none";
         }
-
-        // Fechar o modal ao clicar fora dele
-        window.onclick = function(event) {
-            if (event.target === modalUpdate) {
-                modalUpdate.style.display = "none";
-            } else if (event.target === modalDelete) {
-                modalDelete.style.display = "none";
-            }
-        }
     }
+
 
 
     // Evento de confirmação de deleção
@@ -187,9 +186,17 @@ function associarEventosModal() {
         }
     });
 
+    const formUpdate = document.getElementById('update-user-form');
+    if (formUpdate) {
+        formUpdate.removeEventListener('submit', lidarComAtualizacao);
+        formUpdate.addEventListener('submit', lidarComAtualizacao);
+    }
 }
 
-
+function lidarComAtualizacao(event) {
+    event.preventDefault();
+    atualizarUsuario(userIdToUpdate);
+}
 
 function carregarDadosUsuario(id) {
     fetch(`/usuarios/${id}`)
@@ -261,6 +268,7 @@ function inicializarFormularioChamado() {
                         modalCalled.style.display = "none";
                         messageDiv.style.display = "none";
                     }, 2000);
+                    carregarChamados()
                 })
                 .catch(error => {
                     console.error('Erro: ', error);
@@ -380,5 +388,45 @@ function deletarUsuario(id) {
     })
     .catch(error => {
         console.error('Erro ao deletar o usuário:', error);
+    });
+}
+
+function atualizarUsuario(id) {
+    const nome = document.getElementById('attName').value;
+    const cpf = document.getElementById('attCPF').value.replace(/[.\-]/g, '');
+    const email = document.getElementById('attEmail').value;
+    const tipoUsuario = document.getElementById('attUserType').value;
+
+    console.log("Dados enviados:", { nome, cpf, email, tipoUsuario });
+
+    fetch(`/usuarios/update/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            nome: nome,
+            cpf: cpf,
+            email: email,
+            tipoUsuario: tipoUsuario
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => {
+                throw new Error(text || 'Erro ao atualizar usuário');
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Usuário atualizado com sucesso:', data);
+        carregarUsuarios();
+        document.getElementById('modal-update').style.display = 'none';
+
+    })
+    .catch(error => {
+        console.error('Erro ao atualizar o usuário: ', error);
+        alert(error.message);
     });
 }

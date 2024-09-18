@@ -1,6 +1,7 @@
 package br.edu.ifg.luziania.controller;
 
 import br.edu.ifg.luziania.model.bo.UsuarioBO;
+import br.edu.ifg.luziania.model.dao.TipoUsuarioDAO;
 import br.edu.ifg.luziania.model.entity.TipoUsuario;
 import br.edu.ifg.luziania.model.entity.Usuario;
 import jakarta.ws.rs.*;
@@ -25,6 +26,9 @@ public class UsuarioController {
 
     @Inject
     private UsuarioBO usuarioBO;
+
+    @Inject
+    private TipoUsuarioDAO tipoUsuarioDAO;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -80,32 +84,56 @@ public class UsuarioController {
     public Response atualizarUsuario(@PathParam("id") int idUsuario, UsuarioDTO usuarioDTO) {
         LOG.info("Atualizando usuário com id: " + idUsuario);
 
+
         Usuario usuario = usuarioDAO.buscarPorId(idUsuario);
+
+        System.out.println("Teste de cpf do usuário" + usuario.getCpf());
+
         if (usuario == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
+        TipoUsuario tipoUsuario = tipoUsuarioDAO.buscarPorNome(usuarioDTO.getTipoUsuario());
+        if (tipoUsuario == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Tipo de usuário não encontrado")
+                    .build();
+        }
+
+        // Verificar se o CPF foi alterado e é único
+        String cpfNovo = usuarioDTO.getCpf().replaceAll("[^0-9]", ""); // Remove caracteres não numéricos
+        if (!cpfNovo.equals(usuario.getCpf()) && usuarioDAO.existeCpf(cpfNovo, idUsuario)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("CPF já está em uso por outro usuário")
+                    .build();
+        }
+
+        // Verificar se o email foi alterado e é único
+        String emailNovo = usuarioDTO.getEmail();
+        if (!emailNovo.equals(usuario.getEmail()) && usuarioDAO.existeEmail(emailNovo, idUsuario)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Email já está em uso por outro usuário")
+                    .build();
+        }
+
         usuario.setNome(usuarioDTO.getNome());
-        usuario.setEmail(usuarioDTO.getEmail());
-        usuario.setCpf(usuarioDTO.getCpf());
-        // Atualizar outros campos conforme necessário
+        usuario.setEmail(emailNovo);
+        usuario.setCpf(cpfNovo);
+        usuario.setTipoUsuario(tipoUsuario);
 
         usuarioDAO.atualizar(usuario);
 
         return Response.ok(toDTO(usuario)).build();
     }
 
+
+
     @DELETE
     @Path("/delete/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deletarUsuario(@PathParam("id") int idUsuario) {
         LOG.info("Deletando usuário com id: " + idUsuario);
-
-        try {
-            usuarioDAO.excluir(idUsuario);
-            return Response.noContent().build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erro ao deletar o usuário").build();
-        }
+        usuarioDAO.excluir(idUsuario);
+        return Response.noContent().build();
     }
 }
