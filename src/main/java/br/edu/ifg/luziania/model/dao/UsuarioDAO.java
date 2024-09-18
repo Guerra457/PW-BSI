@@ -37,7 +37,17 @@ public class UsuarioDAO {
     }
     @Transactional
     public void atualizar(Usuario usuario) {
-        em.merge(usuario);
+        try {
+            if (usuario != null) {
+                em.merge(usuario);
+                LOG.info("Usuário atualizado com sucesso: " + usuario.getNome());
+            } else {
+                LOG.error("Usuário para atualização não pode ser nulo");
+            }
+        } catch (Exception e) {
+            LOG.error("Erro ao atualizar usuário", e);
+            throw e;
+        }
     }
 
     @Transactional
@@ -46,6 +56,9 @@ public class UsuarioDAO {
             Usuario usuario = em.find(Usuario.class, idUsuario);
             if (usuario != null) {
                 em.remove(usuario);
+                LOG.info("Usuário excluído com sucesso: " + usuario.getNome());
+            } else {
+                LOG.warn("Usuário com ID " + idUsuario + " não encontrado para exclusão");
             }
         }catch (Exception e) {
             LOG.error("Erro ao excluir usuário", e);
@@ -60,7 +73,7 @@ public class UsuarioDAO {
     }
 
     @Transactional
-    public Usuario buscarPorId(Long id) {
+    public Usuario buscarPorId(int id) {
         return em.find(Usuario.class, id);
     }
 

@@ -61,8 +61,8 @@ function carregarUsuarios() {
                     <p><strong>Email:</strong> ${usuario.email}</p>
                     <p><strong>Tipo de Usuário:</strong> ${usuario.tipoUsuario}</p>
                     <div class="user-buttons">
-                        <button class="update-button" data-id="${usuario.id}">✏️</button>
-                        <button class="delete-button" data-id="${usuario.id}">❌</button>
+                        <button class="update-button" data-id="${usuario.idUsuario}">✏️</button>
+                        <button class="delete-button" data-id="${usuario.idUsuario}">❌</button>
                     </div>
                     `;
                     userList.appendChild(userItem);  // Adiciona o usuário à lista
@@ -136,44 +136,63 @@ function associarEventosModal() {
     var spanUpdate = document.querySelector("#modal-update .close");
     var spanDelete = document.querySelector("#modal-delete .close");
 
-    // Loop para associar os eventos de clique aos botões de atualização
-    for (var i = 0; i < updateButtons.length; i++) {
-        updateButtons[i].onclick = function() {
+    Array.from(updateButtons).forEach(button => {
+        button.onclick = function() {
             var userId = this.getAttribute("data-id");
-
             carregarDadosUsuario(userId);
             modalUpdate.style.display = "block";
         };
-    }
+    });
 
-    // Loop para associar os eventos de clique aos botões de deleção
-    for (var i = 0; i < deleteButtons.length; i++) {
-        deleteButtons[i].onclick = function() {
-            modalDelete.style.display = "block";
-        };
-    }
+    if (!window.deletingUser) {
+        Array.from(deleteButtons).forEach(button => {
+            button.onclick = function() {
+                var userId = this.getAttribute("data-id");
+                modalDelete.style.display = "block";
+                // Atualiza o data-id do botão de confirmação
+                var deleteButton = document.getElementById('confirm-delete');
+                deleteButton.setAttribute('data-id', userId);
+                window.deletinUser = true;
+            };
+        });
 
-    // Eventos para fechar os modais
-    spanUpdate.onclick = function () {
-        modalUpdate.style.display = "none";
-    }
-
-    spanDelete.onclick = function () {
-        modalDelete.style.display = "none";
-    }
-
-    // Fechar o modal ao clicar fora dele
-    window.onclick = function(event) {
-        if (event.target === modalUpdate) {
+        // Eventos para fechar os modais
+        spanUpdate.onclick = function () {
             modalUpdate.style.display = "none";
-        } else if (event.target === modalDelete) {
+        }
+
+        spanDelete.onclick = function () {
             modalDelete.style.display = "none";
         }
+
+        // Fechar o modal ao clicar fora dele
+        window.onclick = function(event) {
+            if (event.target === modalUpdate) {
+                modalUpdate.style.display = "none";
+            } else if (event.target === modalDelete) {
+                modalDelete.style.display = "none";
+            }
+        }
     }
+
+
+    // Evento de confirmação de deleção
+    document.getElementById('confirm-delete')?.addEventListener('click', function() {
+        var userId = this.getAttribute('data-id');
+        if (userId) {
+            deletarUsuario(userId);
+            modalDelete.style.display = "none"; // Fecha o modal após deleção
+        } else {
+            console.error('ID do usuário não encontrado.');
+        }
+    });
+
 }
 
-function carregarDadosUsuario(Id) {
-    fetch(`/usuarios/${Id}`)
+
+
+function carregarDadosUsuario(id) {
+    fetch(`/usuarios/${id}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Erro na requisição: ' + response.status);
@@ -334,4 +353,32 @@ function logoutUsuario() {
             console.error('Erro ao deslogar:', error);
             alert(error.message);
         });
+}
+
+function deletarUsuario(id) {
+    fetch(`/usuarios/delete/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => {
+                throw new Error(text || 'Erro ao deletar usuário');
+            });
+        }
+
+        if (response.status === 204) {
+            return;
+        }
+
+        return response.json();
+    })
+    .then(data => {
+        carregarUsuarios();
+    })
+    .catch(error => {
+        console.error('Erro ao deletar o usuário:', error);
+    });
 }

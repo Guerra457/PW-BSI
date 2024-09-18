@@ -11,16 +11,20 @@ import br.edu.ifg.luziania.model.util.Sessao;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.jboss.logging.Logger;
 import org.mindrot.jbcrypt.BCrypt;
 
 import static java.util.Objects.nonNull;
 @ApplicationScoped
 public class UsuarioBO {
+
     @Inject
     private Sessao sessao;
     @Inject
@@ -31,6 +35,7 @@ public class UsuarioBO {
 
     @Inject
     private JsonWebToken jsonWebToken;
+
 
     public Response autenticarUsuario(AutenticacaoDTO autenticacaoDTO) {
         RespostaStatusDTO respostaStatusDTO = new RespostaStatusDTO();
@@ -88,25 +93,6 @@ public class UsuarioBO {
         return usuarioDTO;
     }
 
-    public void salvarUsuario(UsuarioDTO usuarioDTO) {
-        if (usuarioDTO == null || usuarioDTO.getEmail() == null || usuarioDTO.getEmail().isEmpty()) {
-            throw new IllegalArgumentException("Usuário ou email não pode ser nulo ou vazio");
-        }
-        // Hash da senha
-        String senhaHash = BCrypt.hashpw(usuarioDTO.getSenha(), BCrypt.gensalt());
-
-        Usuario usuario = new Usuario();
-        usuario.setNome(usuarioDTO.getNome());
-        usuario.setCpf(usuarioDTO.getCpf());
-        usuario.setEmail(usuarioDTO.getEmail());
-        usuario.setSenha(senhaHash);
-
-        TipoUsuario tipoUsuario = tipoUsuarioDAO.buscarPorNome(usuarioDTO.getTipoUsuario());
-        usuario.setTipoUsuario(tipoUsuario);
-
-        usuarioDAO.salvar(usuario);
-    }
-
     private String obterPathDeAcesso(String tipoUsuario) {
         switch (tipoUsuario) {
             case "Administrador":
@@ -119,4 +105,5 @@ public class UsuarioBO {
                 return "/acesso-negado";
         }
     }
+
 }
