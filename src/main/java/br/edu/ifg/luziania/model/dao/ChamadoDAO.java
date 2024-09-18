@@ -9,6 +9,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.jboss.logging.Logger;
 
+import java.util.List;
+
 @ApplicationScoped
 public class ChamadoDAO {
     private static final Logger LOG = Logger.getLogger(ChamadoDAO.class);
@@ -46,5 +48,10 @@ public class ChamadoDAO {
         return em.createQuery("SELECT s FROM Status s WHERE s.nomeStatus = :nomeStatus", Status.class)
                 .setParameter("nomeStatus", statusPadrao)
                 .getSingleResult();
+    }
+
+    @Transactional
+    public List<Chamado> listarTodos() {
+        return em.createQuery("SELECT c FROM Chamado c", Chamado.class).getResultList();
     }
 }

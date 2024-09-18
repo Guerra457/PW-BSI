@@ -76,22 +76,18 @@ public class UsuarioBO {
         }
     }
 
-    public UsuarioDTO obterUsuarioDoToken(String token) {
-        try {
-            UsuarioDTO usuario = new UsuarioDTO();
-            usuario.setEmail(jsonWebToken.getName());
-
-            String fullName = jsonWebToken.getClaim(Claims.full_name.name());
-            usuario.setNome(fullName != null ? fullName: "");
-
-            String grupo = jsonWebToken.getClaim(Claims.groups.name());
-            usuario.setTipoUsuario(grupo != null ? grupo : ""); // Obtenha o tipo de usuário ou permissões do claim
-
-            return usuario;
-        } catch (Exception e) {
-            throw new NotAuthorizedException("Token inválido");
+    public UsuarioDTO obterUsuarioLogado() {
+        UsuarioDTO usuarioDTO = new UsuarioDTO();
+        if (sessao.getUsuario() != null) {
+            usuarioDTO.setNome(sessao.getUsuario().getNome());
+            usuarioDTO.setEmail(sessao.getUsuario().getEmail());
+            usuarioDTO.setTipoUsuario(sessao.getUsuario().getTipoUsuario().getNomeTipo());
+        } else {
+            throw new NotAuthorizedException("Usuário não está logado");
         }
+        return usuarioDTO;
     }
+
     public void salvarUsuario(UsuarioDTO usuarioDTO) {
         if (usuarioDTO == null || usuarioDTO.getEmail() == null || usuarioDTO.getEmail().isEmpty()) {
             throw new IllegalArgumentException("Usuário ou email não pode ser nulo ou vazio");

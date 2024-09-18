@@ -1,17 +1,26 @@
 package br.edu.ifg.luziania.model.bo;
 
 import br.edu.ifg.luziania.model.dao.ChamadoDAO;
+import br.edu.ifg.luziania.model.dao.UsuarioDAO;
 import br.edu.ifg.luziania.model.dto.ChamadoDTO;
 import br.edu.ifg.luziania.model.entity.Chamado;
 import br.edu.ifg.luziania.model.entity.Status;
 import br.edu.ifg.luziania.model.entity.Usuario;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.jboss.logging.Logger;
+
+import java.util.List;
 
 @ApplicationScoped
 public class ChamadoBO {
+
+    private static final Logger LOG = Logger.getLogger(ChamadoBO.class);
     @Inject
     private ChamadoDAO chamadoDAO;
+
+    @Inject
+    private UsuarioDAO usuarioDAO;
 
     public Chamado cadastrarChamado(ChamadoDTO chamadoDTO, Usuario usuarioLogado) throws Exception {
 
@@ -42,5 +51,32 @@ public class ChamadoBO {
         System.out.println("Chamado após salvar:" + chamado);
 
         return chamado;
+    }
+
+    public List<ChamadoDTO> listarChamados() {
+        LOG.info("Chmando o método listarChamados");
+
+        List<Chamado> chamados = chamadoDAO.listarTodos();
+        return chamados.stream().map(this::toDTO).toList();
+    }
+
+
+    private ChamadoDTO toDTO(Chamado chamado) {
+        ChamadoDTO dto = new ChamadoDTO();
+        dto.setTitulo(chamado.getTitulo());
+        dto.setDescricao(chamado.getDescricao());
+        dto.setIdSolicitante(chamado.getSolicitante().getIdUsuario());
+        dto.setNomeSolicitante(chamado.getSolicitante().getNome());
+
+        if (chamado.getAtendente() != null) {
+            dto.setIdAtendente(chamado.getAtendente().getIdUsuario());
+        }
+        dto.setNomeStatus(chamado.getStatus().getNomeStatus());
+
+        if (chamado.getComentario() != null) {
+            dto.setComentario(chamado.getComentario());
+        }
+
+        return dto;
     }
 }

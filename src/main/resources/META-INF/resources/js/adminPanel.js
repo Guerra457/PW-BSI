@@ -1,16 +1,26 @@
 document.addEventListener('DOMContentLoaded', function () {
-    carregarUsuarios();  // Certifique-se que a função é chamada ao carregar a página
+    carregarUsuarios();
+    carregarChamados();
+    inicializarModais();
+    inicializarFormularioChamado();
+    inicializarPerfilUsuario();
+});
 
+function inicializarModais() {
     var modalCalled = document.getElementById("modal-called");
     var btnCalled = document.getElementById("open-called"); // Ajuste se necessário para associar ao botão correto
     var spanCalled = document.querySelector("#modal-called .close");
 
-    btnCalled.onclick = function() {
-        modalCalled.style.display = "block";
+    if (btnCalled) {
+        btnCalled.onclick = function() {
+            modalCalled.style.display = "block";
+        };
     }
 
-    spanCalled.onclick = function() {
-        modalCalled.style.display = "none";
+    if (spanCalled) {
+        spanCalled.onclick = function() {
+            modalCalled.style.display = "none";
+        };
     }
 
 // Fechar o modal ao clicar fora dele
@@ -19,12 +29,12 @@ document.addEventListener('DOMContentLoaded', function () {
             modalCalled.style.display = "none";
         }
     }
-});
+}
 function carregarUsuarios() {
     fetch('/usuarios')
         .then(response => {
             if (!response.ok) {
-                throw new Error('Erro na requisição: ' + response.status);
+                throw new Error('Erro na requisição de usuários: ' + response.status);
             }
             return response.json();
         })
@@ -54,7 +64,7 @@ function carregarUsuarios() {
                         <button class="update-button" data-id="${usuario.id}">✏️</button>
                         <button class="delete-button" data-id="${usuario.id}">❌</button>
                     </div>
-                `;
+                    `;
                     userList.appendChild(userItem);  // Adiciona o usuário à lista
                 });
 
@@ -65,6 +75,54 @@ function carregarUsuarios() {
             console.error('Erro ao carregar usuários:', error);
             const userList = document.getElementById('user-list');
             userList.innerHTML = '<p>Erro ao carregar usuários. Tente novamente mais tarde</p>';
+        });
+}
+
+function carregarChamados() {
+    fetch('/chamados/lista-chamados')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro na requisição de chamados: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const calledList = document.getElementById('called-list');
+            const noItemsMessage = document.querySelector('.result-item');
+
+            calledList.innerHTML = '';
+
+            if (data.length === 0) {
+                noItemsMessage.style.display = 'block';
+            } else {
+                noItemsMessage.style.display = 'none';
+
+                data.forEach(chamado => {
+                    const calledItem = document.createElement('div');
+                    calledItem.classList.add('called-item');
+
+
+
+                    calledItem.innerHTML = `
+                    <p><strong>Título:</strong> ${chamado.titulo}</p>
+                    <p><strong>Descrição:</strong> ${chamado.descricao}</p>
+                    <p><strong>Aberto por:</strong> ${chamado.nomeSolicitante}</p>
+                    <p><strong>Atribuído à:</strong> ${chamado.idAtendente || 'Não atribuído'}</p>
+                    <p><strong>Status:</strong> ${chamado.nomeStatus}</p>
+                    <div class="called-buttons">
+                        <button class="update-button" data-id="${chamado.idChamado}">✏️</button>
+                    </div>
+                    `;
+                    calledList.appendChild(calledItem);
+                });
+
+                associarEventosModal();
+            }
+        })
+        .catch(error => {
+           console.error('Erro ao carregar chamados:', error);
+           const calledList = document.getElementById('called-list');
+           calledList.innerHTML = '<p>Erro ao carregar chamados. Tente novamente mais tarde</p>';
         });
 }
 
@@ -143,8 +201,10 @@ function adicionarFormatacaoCPF(cpf) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+function inicializarFormularioChamado() {
     const form = document.getElementById('cadastroChamadosForm');
+    const modalCalled = document.getElementById('modal-called');
+    const messageDiv = document.getElementById('message');
 
     if (form) {
         form.addEventListener('submit', function (event) {
@@ -156,6 +216,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 data[key] = value;
             });
 
+            console.log('Dados do formulário:', data);
+
             fetch('/chamados', {
                 method: 'POST',
                 headers: {
@@ -165,45 +227,56 @@ document.addEventListener('DOMContentLoaded', function () {
             })
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Erro ao cadastrar o chamado');
+                        return response.json().then(errData => {
+                            throw new Error(errData.message || 'Erro ao cadastrar o chamado');
+                        })
                     }
                     return response.json();
                 })
                 .then(data => {
-                    if (data.success) {
-                        const messageDiv = document.getElementById('message');
-                        messageDiv.textContent = 'Chamado cadastrado com sucesso! Fechando...';
-                        messageDiv.style.display = 'block';
+                    //const messageDiv = document.getElementById('message');
+                    messageDiv.textContent = 'Chamado cadastrado com sucesso! Fechando...';
+                    messageDiv.style.display = 'block';
 
-                        setTimeout(function () {
-                            modalCalled.style.display = "none";
-                        }, 3000);
-                    } else {
-                        alert('Erro ao cadastrar o chamado' + data.message);
-                    }
+                    setTimeout(function () {
+                        modalCalled.style.display = "none";
+                        messageDiv.style.display = "none";
+                    }, 2000);
                 })
                 .catch(error => {
                     console.error('Erro: ', error);
                     alert('Ocorreu um erro no cadastro');
                 });
+
         });
     } else {
         console.error('Elemento com ID cadastroChamadosForm não encontrado.');
     }
-});
+}
 
+function inicializarPerfilUsuario() {
+    fetch('/usuarios/logado')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Não foi possível obter os dados do usuário');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Inicializar as iniciais do usuário logado
+            const userFullName = data.nome; // Exemplo, você deve obter isso do backend
+            const initials = getInitials(userFullName);
+            const profileInitialDiv = document.getElementById('profile-initials');
 
-document.addEventListener('DOMContentLoaded', function () {
-    // Inicializar as iniciais do usuário logado
-    const userFullName = 'Matheus Meireles Guerra'; // Exemplo, você deve obter isso do backend
-    const initials = getInitials(userFullName);
-    const profileInitialDiv = document.getElementById('profile-initials');
-
-    if (profileInitialDiv) {
-        profileInitialDiv.textContent = initials;
-    } else {
-        console.error('Elemento profile-initials não encontrado!');
-    }
+            if (profileInitialDiv) {
+                profileInitialDiv.textContent = initials;
+            } else {
+                console.error('Elemento profile-initials não encontrado!');
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao obter dados do usuário: ', error);
+        });
 
     // Mostrar/Esconder menu de logout ao clicar no perfil
     const profile = document.querySelector('.profile');
@@ -230,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function () {
     } else {
         console.error('Elemento logout-btn não encontrado!');
     }
-});
+}
 
 // Função para capturar as iniciais do nome completo
 function getInitials(fullName) {

@@ -92,7 +92,10 @@
                 </div>
             </ul>
         </section>
-        <section class="results-section">
+        <section class="results-section" id="called-results">
+            <div id="called-list">
+
+            </div>
             <div class="result-item">
                 <p>Nenhum item encontrado</p>
             </div>
@@ -104,11 +107,11 @@
         <span class="close">&times;</span>
         <h2 class="model-title">Cadastro de Chamados</h2>
         <div id="message" style="display: none"></div>
-        <form method="post" action="/chamados" id="cadastroChamadosForm">
+        <form method="POST" action="/chamados" id="cadastroChamadosForm">
             <label for="title">Título:</label><br>
-            <input type="text" id="title" name="title"><br><br>
+            <input type="text" id="title" name="titulo" required><br><br>
             <label for="description">Descrição:</label><br>
-            <textarea id="description" name="description" placeholder="Informe qual o problema está enfrentando"></textarea><br><br>
+            <textarea id="description" name="descricao" placeholder="Informe qual o problema está enfrentando" required></textarea><br><br>
             <button type="submit" class="button-generic">Enviar</button>
         </form>
     </div>

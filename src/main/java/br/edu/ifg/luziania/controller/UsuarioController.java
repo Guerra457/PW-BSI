@@ -1,5 +1,6 @@
 package br.edu.ifg.luziania.controller;
 
+import br.edu.ifg.luziania.model.bo.UsuarioBO;
 import br.edu.ifg.luziania.model.entity.TipoUsuario;
 import br.edu.ifg.luziania.model.entity.Usuario;
 import jakarta.ws.rs.*;
@@ -22,6 +23,9 @@ public class UsuarioController {
     @Inject
     private UsuarioDAO usuarioDAO;
 
+    @Inject
+    private UsuarioBO usuarioBO;
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<UsuarioDTO> listarUsuarios() {
@@ -39,6 +43,7 @@ public class UsuarioController {
         dto.setEmail(usuario.getEmail());
         dto.setNome(usuario.getNome());
         dto.setTipoUsuario(usuario.getTipoUsuario().getNomeTipo());
+
         return dto;
     }
 
@@ -53,6 +58,18 @@ public class UsuarioController {
             return Response.ok(toDTO(usuario)).build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
+
+    @GET
+    @Path("/logado")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response obterUsuarioLogado() {
+        try {
+            UsuarioDTO usuarioDTO = usuarioBO.obterUsuarioLogado();
+            return Response.ok(usuarioDTO).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
         }
     }
 }

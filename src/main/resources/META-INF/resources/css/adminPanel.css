@@ -182,6 +182,7 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
+
 }
 
 .result-item p {
@@ -278,14 +279,14 @@ body {
     }
 }
 
-#user-list {
+#user-list, #called-list {
     display: flex;
     flex-direction: column; /* Exibe os itens em coluna */
     gap: 10px; /* Espaço entre os itens */
     padding: 20px;
 }
 
-.user-item {
+.user-item, .called-item {
     background-color: #fff; /* Fundo branco para cada item */
     border: 1px solid #ddd; /* Borda leve para separação */
     border-radius: 8px; /* Bordas arredondadas */
@@ -294,25 +295,25 @@ body {
     transition: background-color 0.3s; /* Transição suave para a cor de fundo */
 }
 
-.user-item:hover {
+.user-item:hover, .called-item:hover {
     background-color: #f0f8ff; /* Cor de fundo ao passar o mouse */
 }
 
-.user-item p {
+.user-item p, .called-item p {
     margin: 5px 0; /* Margem entre os parágrafos */
 }
 
-.user-item p strong {
+.user-item p strong, .called-item p strong{
     display: inline-block;
     width: 150px; /* Largura fixa para rótulos */
     color: #333; /* Cor do texto dos rótulos */
 }
 
-.user-buttons {
+.user-buttons, .called-buttons {
     margin-top: 10px;
 }
 
-.user-buttons button {
+.user-buttons button, .called-buttons button {
     background-color: #002d4f;
     color: white;
     border: none;
@@ -323,7 +324,7 @@ body {
     font-size: 16px;
 }
 
-.user-buttons button:hover {
+.user-buttons button:hover, .called-buttons button:hover {
     background-color: #004080;
 }
 

@@ -18,6 +18,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.jboss.logging.Logger;
 
+import java.util.List;
+
 import static java.util.Objects.requireNonNull;
 
 @Path("/chamados")
@@ -39,6 +41,7 @@ public class Chamados {
     @Inject
     private ChamadoBO chamadoBO;
 
+
     @Inject
     private Sessao sessao;
 
@@ -48,7 +51,17 @@ public class Chamados {
     @Produces(MediaType.APPLICATION_JSON)
     public Response cadastrarChamado(ChamadoDTO chamadoDTO) {
         try {
+            System.out.println("ChamadoDTO recebido " + chamadoDTO.getTitulo());
+            System.out.println("ChamadoDTO recebido " + chamadoDTO.getDescricao());
+
+            if (chamadoDTO.getTitulo() == null || chamadoDTO.getDescricao() == null) {
+                LOG.error("Título ou Descrição está nulo");
+                return Response.status(Response.Status.BAD_REQUEST).entity("Título ou Descrição não podem ser nulos").build();
+            }
+
             Usuario usuarioLogado = sessao.getUsuario();
+
+            System.out.println("Nome do usuário logado: " + usuarioLogado);
             if (usuarioLogado == null) {
                 LOG.error("Usuário Logado não encontrado");
                 return Response.status(Response.Status.BAD_REQUEST).entity("Usuário logado não encontrado").build();
@@ -62,6 +75,19 @@ public class Chamados {
         } catch (Exception e) {
             LOG.error("Erro ao criar chamado", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erro ao criar chamado").build();
+        }
+    }
+
+    @GET
+    @Path("/lista-chamados")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response listarChamados(){
+        try {
+            List<ChamadoDTO> chamados = chamadoBO.listarChamados();
+            return Response.ok(chamados).build();
+        } catch (Exception e) {
+            LOG.error("Erro ao listar chamados", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erro ao listar chamados").build();
         }
     }
 }
