@@ -31,6 +31,7 @@ public class UsuarioController {
     private TipoUsuarioDAO tipoUsuarioDAO;
 
     @GET
+    @Path("lista-usuarios")
     @Produces(MediaType.APPLICATION_JSON)
     public List<UsuarioDTO> listarUsuarios() {
         LOG.info("Chamando o método listarUsuarios");
@@ -55,7 +56,7 @@ public class UsuarioController {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response listarUsuariosPorId(@PathParam("id") int id){
+    public Response listarUsuariosPorId(@PathParam("id") int id) {
         LOG.info("Buscando usuário com Id: " + id);
 
         Usuario usuario = usuarioDAO.buscarPorId(id);

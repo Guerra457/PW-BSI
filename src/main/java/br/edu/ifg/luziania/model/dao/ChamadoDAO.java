@@ -6,6 +6,7 @@ import br.edu.ifg.luziania.model.entity.Usuario;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 import org.jboss.logging.Logger;
 
@@ -33,6 +34,34 @@ public class ChamadoDAO {
     }
 
     @Transactional
+    public void atualizar(Chamado chamado, Usuario usuario) {
+        if (chamado == null) {
+            LOG.error("Chamado para atualização não pode ser nulo");
+            throw new IllegalArgumentException("Chamado não pode ser nulo");
+        }
+
+        try {
+            Chamado chamadoExistente = em.find(Chamado.class, chamado.getIdChamado());
+
+            if (chamadoExistente != null) {
+                // Atualiza o status e o atendente do chamado existente
+                chamadoExistente.setStatus(chamado.getStatus());
+                chamadoExistente.setAtendente(usuario);
+
+                em.merge(chamadoExistente);
+                LOG.info("Chamado atualizado com sucesso: " + chamadoExistente.getTitulo());
+            } else {
+                LOG.error("Chamado para atualização não encontrado");
+                throw new NoResultException("Chamado não encontrado para ID: " + chamado.getIdChamado());
+            }
+        } catch (Exception e) {
+            LOG.error("Erro ao atualizar chamado", e);
+            throw e;
+        }
+    }
+
+
+    @Transactional
     public Usuario buscarUsuarioPorId(Long id) {
         return em.find(Usuario.class, id);
     }
@@ -53,5 +82,11 @@ public class ChamadoDAO {
     @Transactional
     public List<Chamado> listarTodos() {
         return em.createQuery("SELECT c FROM Chamado c", Chamado.class).getResultList();
+    }
+
+    @Transactional
+    public Chamado buscarPorId(int idChamado) {
+        LOG.info("Buscando chamado na base de dados com id: " + idChamado);
+        return em.find(Chamado.class, idChamado);
     }
 }

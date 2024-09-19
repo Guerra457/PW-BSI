@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chamados</title>
     <link rel="stylesheet" href="/css/chamados.css">
+    <script src="/js/chamados.js"></script>
 </head>
 <body>
 <header>
@@ -12,8 +13,11 @@
         <button class="menu-btn">☰</button>
         <img src="/images/logo.png" alt="Logo" class="logo">
         <div class="profile">
-            <div class="profile-initials">
-                MG
+            <div class="profile-initials" id="profile-initials">
+
+            </div>
+            <div id="logout-menu" class="logout-menu" style="display: none;">
+                <button id="logout-btn">Logout</button>
             </div>
         </div>
     </div>
@@ -34,12 +38,39 @@
             </select>
         </div>
     </section>
+    <section class="results-section" id="called-results">
+        <div id="called-list">
 
-    <section class="results-section">
+        </div>
         <div class="result-item">
             <p>Nenhum item encontrado</p>
         </div>
     </section>
 </main>
+<div id="modal-called" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 class="model-title">Chamado</h2>
+        <div id="message" style="display: none"></div>
+        <form id="update-chamados-form">
+            <label for="titulo">Título:</label><br>
+            <p id="titulo"></p><br><br>
+            <label for="descricao">Descrição:</label><br>
+            <p id="descricao"></p><br><br>
+            <label for="solicitante">Aberto por:</label><br>
+            <p id="solicitante"></p><br><br>
+            <label for="atendente">Atribuído à:</label><br>
+            <p id="atendente"></p><br><br>
+            <label for="status">Status:</label><br>
+            <select id="attStatus">
+                <option value="Aberto">🟢 Aberto</option>
+                <option value="Em atendimento">🔵 Em atendimento</option>
+                <option value="Pendente">🟡 Pendente</option>
+                <option value="Solucionado">🔴 Solucionado</option>
+            </select>
+            <button type="submit" class="button-generic">Salvar</button>
+        </form>
+    </div>
+</div>
 </body>
 </html>

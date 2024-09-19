@@ -2,6 +2,7 @@ package br.edu.ifg.luziania.controller;
 
 import br.edu.ifg.luziania.model.bo.ChamadoBO;
 import br.edu.ifg.luziania.model.dao.ChamadoDAO;
+import br.edu.ifg.luziania.model.dao.StatusDAO;
 import br.edu.ifg.luziania.model.dao.UsuarioDAO;
 import br.edu.ifg.luziania.model.dto.ChamadoDTO;
 import br.edu.ifg.luziania.model.entity.Chamado;
@@ -14,6 +15,7 @@ import io.quarkus.qute.TemplateInstance;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.jboss.logging.Logger;
@@ -41,9 +43,14 @@ public class Chamados {
     @Inject
     private ChamadoBO chamadoBO;
 
+    @Inject
+    private ChamadoDAO chamadoDAO;
 
     @Inject
     private Sessao sessao;
+
+    @Inject
+    private StatusDAO statusDAO;
 
     @POST
     @Transactional
@@ -78,6 +85,42 @@ public class Chamados {
         }
     }
 
+    @PUT
+    @Path("/update/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response atualizarChamado(@PathParam("id") int idChamado, ChamadoDTO chamadoDTO, @Context Sessao sessao) {
+        LOG.info("Atualizando chamado com id: " + idChamado);
+
+        Chamado chamado = chamadoDAO.buscarPorId(idChamado);
+
+        if (chamado == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        Status status = statusDAO.buscarPorNome(chamadoDTO.getNomeStatus());
+        LOG.info("Buscando status com nome:" + chamadoDTO.getNomeStatus());
+        if (status == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Status não encontrado")
+                    .build();
+        }
+
+        chamado.setStatus(status);
+
+        Usuario usuarioAtendente = sessao.getUsuario();
+        if (usuarioAtendente != null) {
+            chamado.setAtendente(usuarioAtendente);
+        } else {
+            LOG.error("Usuário atendente não encontrado.");
+            return Response.status(Response.Status.BAD_REQUEST).entity("Usuário atendente não encontrado.").build();
+        }
+
+        chamadoDAO.atualizar(chamado, usuarioAtendente);
+
+        LOG.info("Chamado atualizado: " + chamado);
+        return Response.ok(toDTO(chamado)).build();
+    }
+
     @GET
     @Path("/lista-chamados")
     @Produces(MediaType.APPLICATION_JSON)
@@ -88,6 +131,39 @@ public class Chamados {
         } catch (Exception e) {
             LOG.error("Erro ao listar chamados", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erro ao listar chamados").build();
+        }
+    }
+
+    private ChamadoDTO toDTO(Chamado chamado) {
+        ChamadoDTO dto = new ChamadoDTO();
+        dto.setIdChamado(chamado.getIdChamado());
+        dto.setTitulo(chamado.getTitulo());
+        dto.setDescricao(chamado.getDescricao());
+
+        if (chamado.getAtendente() != null) {
+            dto.setNomeAtendente(chamado.getAtendente().getNome());
+            dto.setIdAtendente(chamado.getAtendente().getIdUsuario());
+        } else {
+            dto.setNomeAtendente("Não atribuído");
+        }
+
+        dto.setNomeSolicitante(chamado.getSolicitante().getNome());
+        dto.setIdSolicitante(chamado.getSolicitante().getIdUsuario());
+        dto.setNomeStatus(chamado.getStatus().getNomeStatus());
+
+        return dto;
+    }
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response listarChamadosPorId(@PathParam("id") int id) {
+        LOG.info("Buscando chamado com Id: " + id);
+
+        Chamado chamado = chamadoDAO.buscarPorId(id);
+        if (chamado != null) {
+            return Response.ok(toDTO(chamado)).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 }

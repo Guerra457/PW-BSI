@@ -63,19 +63,20 @@ public class ChamadoBO {
 
     private ChamadoDTO toDTO(Chamado chamado) {
         ChamadoDTO dto = new ChamadoDTO();
+        dto.setIdChamado(chamado.getIdChamado());
         dto.setTitulo(chamado.getTitulo());
         dto.setDescricao(chamado.getDescricao());
-        dto.setIdSolicitante(chamado.getSolicitante().getIdUsuario());
-        dto.setNomeSolicitante(chamado.getSolicitante().getNome());
 
         if (chamado.getAtendente() != null) {
+            dto.setNomeAtendente(chamado.getAtendente().getNome());
             dto.setIdAtendente(chamado.getAtendente().getIdUsuario());
+        } else {
+            dto.setNomeAtendente("Não atribuído");
         }
-        dto.setNomeStatus(chamado.getStatus().getNomeStatus());
 
-        if (chamado.getComentario() != null) {
-            dto.setComentario(chamado.getComentario());
-        }
+        dto.setNomeSolicitante(chamado.getSolicitante().getNome());
+        dto.setIdSolicitante(chamado.getSolicitante().getIdUsuario());
+        dto.setNomeStatus(chamado.getStatus().getNomeStatus());
 
         return dto;
     }

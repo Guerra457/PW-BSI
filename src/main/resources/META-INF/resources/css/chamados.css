@@ -3,6 +3,18 @@
     padding: 0;
     box-sizing: border-box;
 }
+ul{
+    padding: 8px;
+}
+
+textarea {
+    width: 100%; /* Faz o textarea ocupar toda a largura do contêiner pai */
+    height: 150px; /* Altura fixa para o textarea */
+    box-sizing: border-box; /* Inclui padding e bordas na largura e altura */
+    resize: vertical; /* Permite redimensionar apenas na vertical */
+    border-radius: 5px;
+    font-size: 18px;
+}
 
 body {
     font-family: Arial, sans-serif;
@@ -54,7 +66,7 @@ body {
     align-items: center;
 }
 
-.profile-initials {
+#profile-initials {
     background-color: #5e55d4;
     color: white;
     width: 40px;
@@ -67,6 +79,75 @@ body {
     font-size: 16px;
     text-transform: uppercase;
 }
+
+.filter-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.filter-buttons button {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#open-called {
+    background-color: #002d4f;
+    color: white;
+    width: 50px;
+    height: 50px;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#open-called:hover {
+    background-color: #004080;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    width: 300px;
+    font-size: 16px;
+}
+
+.search-box input {
+    border: none;
+    padding: 10px;
+    font-size: 18px;
+}
+
+.search-box input::placeholder {
+    font-size: 16px;
+}
+
+.search-class {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    outline: none;
+}
+
+#search-button {
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 28px;
+    line-height: 1;
+}
+
+#search-button:hover {
+    background-color: #004080;
+}
+
 
 .filters-section {
     margin: 20px;
@@ -101,8 +182,197 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
+
 }
 
 .result-item p {
     color: #888;
+}
+
+#modal-called {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4); /* Fundo preto com opacidade */
+}
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* Centraliza o modal */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Largura do modal */
+    max-width: 80%; /* Largura máxima do modal */
+    border-radius: 5px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.button-generic {
+    background-color: #002d4f;
+    color: white;
+    padding: 10px;
+    width: 120px;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button-generic:hover{
+    background-color: #004080;
+}
+
+#titulo {
+    padding: 10px;
+    font-size: 18px;
+    border-radius: 5px;
+    border: 1px solid #767676;
+    width: 40%;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+}
+
+.model-title {
+    margin-bottom: 30px;
+}
+
+.admin-dashboard {
+    display: flex;
+    justify-content: space-between; /* Para espaçar igualmente entre os itens */
+    gap: 20px; /* Espaçamento entre as áreas */
+    padding: 20px;
+}
+
+/* Define o tamanho das seções */
+.users-area, .called-area {
+    flex: 1; /* Faz com que ambos ocupem o mesmo espaço */
+    border: 1px solid #ccc;
+    padding: 20px;
+}
+
+@media (max-width: 768px) {
+    .admin-dashboard{
+        flex-direction: column;
+    }
+    .modal-content{
+        width: 90%;
+        max-width: 90%;
+        margin: 10% auto;
+    }
+}
+
+#user-list, #called-list {
+    display: flex;
+    flex-direction: column; /* Exibe os itens em coluna */
+    gap: 10px; /* Espaço entre os itens */
+    padding: 20px;
+}
+
+.user-item, .called-item {
+    background-color: #fff; /* Fundo branco para cada item */
+    border: 1px solid #ddd; /* Borda leve para separação */
+    border-radius: 8px; /* Bordas arredondadas */
+    padding: 15px; /* Espaçamento interno */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra leve */
+    transition: background-color 0.3s; /* Transição suave para a cor de fundo */
+}
+
+.user-item:hover, .called-item:hover {
+    background-color: #f0f8ff; /* Cor de fundo ao passar o mouse */
+}
+
+.user-item p, .called-item p {
+    margin: 5px 0; /* Margem entre os parágrafos */
+}
+
+.user-item p strong, .called-item p strong{
+    display: inline-block;
+    width: 150px; /* Largura fixa para rótulos */
+    color: #333; /* Cor do texto dos rótulos */
+}
+
+.user-buttons, .called-buttons {
+    margin-top: 10px;
+}
+
+.user-buttons button, .called-buttons button {
+    background-color: #002d4f;
+    color: white;
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+.user-buttons button:hover, .called-buttons button:hover {
+    background-color: #004080;
+}
+
+#modal-delete .modal-content {
+    width: 45%; /* Diminui a largura do modal */
+    max-width: 45%; /* Define um limite máximo de largura */
+}
+
+#modal-delete .button-generic {
+    width: 80px; /* Diminui a largura dos botões */
+    margin: 10px; /* Adiciona margem entre os botões */
+    display: inline-block; /* Faz com que os botões sejam exibidos um ao lado do outro */
+}
+
+#modal-delete .modal-content {
+    text-align: center; /* Centraliza o conteúdo no modal */
+}
+
+#modal-delete .modal-content p {
+    margin-bottom: 20px; /* Adiciona espaço abaixo do texto */
+}
+
+#modal-called p,
+#modal-called select {
+    width: 25%; /* Faz os campos ocuparem toda a largura disponível */
+    padding: 10px; /* Adiciona espaçamento interno */
+    font-size: 18px; /* Define o tamanho da fonte */
+    border: 1px solid #ccc; /* Define uma borda consistente */
+    border-radius: 5px; /* Bordas arredondadas */
+    margin-bottom: 15px; /* Espaçamento entre os campos */
+    box-sizing: border-box; /* Inclui padding na largura e altura */
+}
+
+.logout-menu {
+    position: absolute;
+    top: 50px;
+    right: 10px;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+
+.logout-menu button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
 }

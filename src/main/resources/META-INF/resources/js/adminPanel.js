@@ -31,7 +31,7 @@ function inicializarModais() {
     }
 }
 function carregarUsuarios() {
-    fetch('/usuarios')
+    fetch('/usuarios/lista-usuarios')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Erro na requisição de usuários: ' + response.status);
