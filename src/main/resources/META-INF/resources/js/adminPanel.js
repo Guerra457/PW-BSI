@@ -88,7 +88,7 @@ function carregarChamados() {
         })
         .then(data => {
             const calledList = document.getElementById('called-list');
-            const noItemsMessage = document.querySelector('.result-item');
+            const noItemsMessage = document.querySelector('.result-item-called');
 
             calledList.innerHTML = '';
 
@@ -519,7 +519,7 @@ function atualizarChamado(id){
         .then(data => {
             console.log('Chamado atualizado com sucesso:', data);
             carregarChamados();
-            document.getElementById('modal-called').style.display = 'none';
+            document.getElementById('modal-update-called').style.display = 'none';
         })
         .catch(error => {
             console.error('Erro ao atualizar o usuário: ', error);

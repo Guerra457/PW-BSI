@@ -5,6 +5,8 @@ import br.edu.ifg.luziania.model.dao.ChamadoDAO;
 import br.edu.ifg.luziania.model.dao.StatusDAO;
 import br.edu.ifg.luziania.model.dao.UsuarioDAO;
 import br.edu.ifg.luziania.model.dto.ChamadoDTO;
+import br.edu.ifg.luziania.model.dto.ResponseDTO;
+import br.edu.ifg.luziania.model.dto.StatusDTO;
 import br.edu.ifg.luziania.model.entity.Chamado;
 import br.edu.ifg.luziania.model.entity.Status;
 import br.edu.ifg.luziania.model.entity.Usuario;
@@ -144,6 +146,27 @@ public class Chamados {
         } catch (Exception e) {
             LOG.error("Erro ao listar chamados do usuário", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erro ao listar chamados").build();
+        }
+    }
+
+    @PATCH
+    @Path("/{id}/atualizar-status")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response atualizarStatusChamado(@PathParam("id") int idChamado, StatusDTO statusDTO) {
+        try {
+            Usuario usuarioLogado = sessao.getUsuario();
+            if (usuarioLogado == null) {
+                return Response.status(Response.Status.UNAUTHORIZED).entity("Usuário não está autenticado.").build();
+            }
+
+            // Atualiza o status do chamado
+            chamadoBO.atualizarStatus(idChamado, statusDTO.getNomeStatus(), usuarioLogado);
+            return Response.ok(new ResponseDTO("Status atualizado com sucesso")).build();
+        } catch (NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Chamado não encontrado.").build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erro ao atualizar o status do chamado.").build();
         }
     }
 

@@ -9,6 +9,7 @@ import br.edu.ifg.luziania.model.entity.Usuario;
 import br.edu.ifg.luziania.model.util.Sessao;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.NotFoundException;
 import org.jboss.logging.Logger;
 
 import java.util.ArrayList;
@@ -76,11 +77,10 @@ public class ChamadoBO {
 
         int idUsuario = usuarioLogado.getIdUsuario();
         List<Chamado> chamadosSolicitante = chamadoDAO.buscarPorSolicitante(idUsuario);
-        List<Chamado> chamadosAtendente = chamadoDAO.buscarPorAtendente(idUsuario);
+
 
         List<Chamado> todosChamados = new ArrayList<>();
         todosChamados.addAll(chamadosSolicitante);
-        todosChamados.addAll(chamadosAtendente);
 
         List<ChamadoDTO> chamadosDTO = todosChamados.stream()
                 .map(this::toDTO)
@@ -89,6 +89,22 @@ public class ChamadoBO {
         return chamadosDTO;
     }
 
+    public void atualizarStatus(int idChamado, String novoStatus, Usuario usuario) {
+        Chamado chamado = chamadoDAO.buscarPorId(idChamado);
+
+        if (chamado == null) {
+            throw new NotFoundException("Chamado não encontrado.");
+        }
+
+        Status status = chamadoDAO.buscarStatusPorNome(novoStatus);
+        if (status == null) {
+            throw new IllegalArgumentException("Status inválido "+ novoStatus);
+        }
+
+        // Atualiza o status do chamado
+        chamado.setStatus(status);
+        chamadoDAO.atualizar(chamado, usuario);
+    }
 
     private ChamadoDTO toDTO(Chamado chamado) {
         ChamadoDTO dto = new ChamadoDTO();

@@ -170,7 +170,7 @@ body {
     font-size: 18px;
 }
 
-.results-section {
+.results-section, .closed-section {
     margin: 20px;
     background-color: #fff;
     padding: 20px;

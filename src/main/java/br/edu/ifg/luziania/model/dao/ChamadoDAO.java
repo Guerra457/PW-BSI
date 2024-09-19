@@ -89,6 +89,22 @@ public class ChamadoDAO {
     }
 
     @Transactional
+    public Status buscarStatusPorNome(String nomeStatus) {
+        try {
+            return em.createQuery("SELECT s FROM Status s WHERE s.nomeStatus = :nomeStatus", Status.class)
+                    .setParameter("nomeStatus", nomeStatus)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            LOG.warn("Status não encontrado com o nome: " + nomeStatus);
+            return null;
+        } catch (Exception e) {
+            LOG.error("Erro ao buscar status por nome: " + nomeStatus, e);
+            throw e;
+        }
+    }
+
+
+    @Transactional
     public List<Chamado> listarTodos() {
         return em.createQuery("SELECT c FROM Chamado c", Chamado.class).getResultList();
     }

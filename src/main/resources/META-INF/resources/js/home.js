@@ -87,9 +87,11 @@ function carregarChamados() {
         })
         .then(data => {
             const calledList = document.getElementById('called-list');
+            const closedCalledList = document.getElementById('closed-called-list');
             const noItemsMessage = document.querySelector('.result-item');
 
             calledList.innerHTML = '';
+            closedCalledList.innerHTML = '';
 
             if (data.length === 0) {
                 noItemsMessage.style.display = 'block';
@@ -100,22 +102,29 @@ function carregarChamados() {
                     const calledItem = document.createElement('div');
                     calledItem.classList.add('called-item');
 
-
+                    const showButtons = chamado.nomeStatus === 'Solucionado';
 
                     calledItem.innerHTML = `
-                    <p><strong>Título:</strong> ${chamado.titulo}</p>
-                    <p><strong>Descrição:</strong> ${chamado.descricao}</p>
-                    <p><strong>Aberto por:</strong> ${chamado.nomeSolicitante}</p>
-                    <p><strong>Atribuído à:</strong> ${chamado.idAtendente || 'Não atribuído'}</p>
-                    <p><strong>Status:</strong> ${chamado.nomeStatus}</p>
-                    <div class="called-buttons">
-                        <button class="update-button" data-id="${chamado.idChamado}">✏️</button>
-                    </div>
+                        <p><strong>Título:</strong> ${chamado.titulo}</p>
+                        <p><strong>Descrição:</strong> ${chamado.descricao}</p>
+                        <p><strong>Aberto por:</strong> ${chamado.nomeSolicitante}</p>
+                        <p><strong>Atribuído à:</strong> ${chamado.idAtendente || 'Não atribuído'}</p>
+                        <p><strong>Status:</strong> ${chamado.nomeStatus}</p>
+                        <div class="called-buttons">
+                            ${showButtons ? `<button class="closeCalled" data-id="${chamado.idChamado}">Fechar</button>` : ''}
+                            ${showButtons ? `<button class="reopenCalled" data-id="${chamado.idChamado}">Reabrir</button>` : ''}
+                        </div>
                     `;
-                    calledList.appendChild(calledItem);
+                    if (chamado.nomeStatus === 'Fechado') {
+                        closedCalledList.appendChild(calledItem);
+                    } else {
+                        calledList.appendChild(calledItem);
+                    }
+
                 });
 
                 associarEventosModal();
+                associarEventosFecharChamado();
             }
         })
         .catch(error => {
@@ -186,6 +195,43 @@ function associarEventosModal() {
         formUpdate.removeEventListener('submit', lidarComAtualizacao);
         formUpdate.addEventListener('submit', lidarComAtualizacao);
     }
+}
+
+function associarEventosFecharChamado() {
+    const closeButtons = document.querySelectorAll('.closeCalled');
+
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const chamadoId = this.getAttribute('data-id');
+
+            // Chama a função para atualizar o status do chamado para "Fechado"
+            atualizarStatusChamado(chamadoId, 'Fechado');
+        });
+    });
+}
+
+function atualizarStatusChamado(id, novoStatus) {
+    fetch(`/chamados/${id}/atualizar-status`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ nomeStatus: novoStatus })
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro ao atualizar o status do chamado: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(() => {
+            // Recarrega a lista de chamados após a atualização
+            carregarChamados();
+        })
+        .catch(error => {
+            console.error('Erro ao atualizar status do chamado:', error);
+            alert('Erro ao atualizar status do chamado. Tente novamente.');
+        });
 }
 
 function lidarComAtualizacao(event) {
