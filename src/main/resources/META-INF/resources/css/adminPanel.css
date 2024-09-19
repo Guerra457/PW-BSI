@@ -189,7 +189,7 @@ body {
     color: #888;
 }
 
-#modal-called, #modal-update, #modal-delete {
+#modal-called, #modal-update-called, #modal-update, #modal-delete {
     display: none;
     position: fixed;
     z-index: 1;
@@ -348,7 +348,7 @@ body {
 }
 
 #modal-update input,
-#modal-update select {
+#modal-update select, #modal-update-called select {
     width: 50%; /* Faz os campos ocuparem toda a largura disponível */
     padding: 10px; /* Adiciona espaçamento interno */
     font-size: 18px; /* Define o tamanho da fonte */

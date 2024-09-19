@@ -116,6 +116,32 @@
         </form>
     </div>
 </div>
+<div id="modal-update-called" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 class="model-title">Chamado</h2>
+        <div id="message" style="display: none"></div>
+        <form id="update-chamados-form">
+            <label for="titulo">Título:</label><br>
+            <p id="titulo"></p><br><br>
+            <label for="descricao">Descrição:</label><br>
+            <p id="descricao"></p><br><br>
+            <label for="solicitante">Aberto por:</label><br>
+            <p id="solicitante"></p><br><br>
+            <label for="atendente">Atribuído à:</label><br>
+            <p id="atendente"></p><br><br>
+            <label for="status">Status:</label><br>
+            <select id="attStatus">
+                <option value="Aberto">🟢 Aberto</option>
+                <option value="Em atendimento">🔵 Em atendimento</option>
+                <option value="Pendente">🟡 Pendente</option>
+                <option value="Solucionado">🔴 Solucionado</option>
+                <option value="Fechado">⚫ Fechado</option>
+            </select>
+            <button type="submit" class="button-generic">Salvar</button>
+        </form>
+    </div>
+</div>
 <div id="modal-update" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>

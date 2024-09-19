@@ -62,8 +62,17 @@ public class ChamadoDAO {
 
 
     @Transactional
-    public Usuario buscarUsuarioPorId(Long id) {
-        return em.find(Usuario.class, id);
+    public List<Chamado> buscarPorSolicitante(int idUsuario) {
+        return em.createQuery("SELECT c FROM Chamado c WHERE c.solicitante.idUsuario = :idUsuario", Chamado.class)
+                .setParameter("idUsuario", idUsuario)
+                .getResultList();
+    }
+
+    @Transactional
+    public List<Chamado> buscarPorAtendente(int idUsuario) {
+        return em.createQuery("SELECT c FROM Chamado c WHERE c.atendente.idUsuario = :idUsuario", Chamado.class)
+                .setParameter("idUsuario", idUsuario)
+                .getResultList();
     }
 
     @Transactional

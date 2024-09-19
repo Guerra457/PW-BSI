@@ -110,7 +110,7 @@ function carregarChamados() {
                     <p><strong>Atribuído à:</strong> ${chamado.idAtendente || 'Não atribuído'}</p>
                     <p><strong>Status:</strong> ${chamado.nomeStatus}</p>
                     <div class="called-buttons">
-                        <button class="update-button" data-id="${chamado.idChamado}">✏️</button>
+                        <button class="update-button-called" data-id="${chamado.idChamado}">✏️</button>
                     </div>
                     `;
                     calledList.appendChild(calledItem);
@@ -129,12 +129,15 @@ function carregarChamados() {
 function associarEventosModal() {
     var modalUpdate = document.getElementById("modal-update");
     var modalDelete = document.getElementById("modal-delete");
+    var modalUpdateCalled = document.getElementById("modal-update-called");
 
     var updateButtons = document.getElementsByClassName("update-button");
     var deleteButtons = document.getElementsByClassName("delete-button");
+    var updateButtonsCalled = document.getElementsByClassName("update-button-called");
 
     var spanUpdate = document.querySelector("#modal-update .close");
     var spanDelete = document.querySelector("#modal-delete .close");
+    var spanUpdateCalled = document.querySelector("#modal-update-called .close");
 
     Array.from(updateButtons).forEach(button => {
         button.onclick = function() {
@@ -155,6 +158,14 @@ function associarEventosModal() {
         };
     });
 
+    Array.from(updateButtonsCalled).forEach(button => {
+        button.onclick = function () {
+            calledIdToUpdate = this.getAttribute("data-id");
+            carregarDadosChamado(calledIdToUpdate);
+            modalUpdateCalled.style.display = "block";
+        }
+    })
+
     // Eventos para fechar os modais
     spanUpdate.onclick = function () {
         modalUpdate.style.display = "none";
@@ -164,12 +175,20 @@ function associarEventosModal() {
         modalDelete.style.display = "none";
     }
 
+    spanUpdateCalled.onclick = function () {
+        modalUpdateCalled.style.display = "none";
+    }
+
     // Fechar o modal ao clicar fora dele
     window.onclick = function(event) {
         if (event.target === modalUpdate) {
             modalUpdate.style.display = "none";
-        } else if (event.target === modalDelete) {
+        }
+        if (event.target === modalDelete) {
             modalDelete.style.display = "none";
+        }
+        if (event.target === modalUpdateCalled) {
+            modalUpdateCalled.style.display = "none";
         }
     }
 
@@ -191,11 +210,45 @@ function associarEventosModal() {
         formUpdate.removeEventListener('submit', lidarComAtualizacao);
         formUpdate.addEventListener('submit', lidarComAtualizacao);
     }
+
+    const formUpdateCalled = document.getElementById('update-chamados-form');
+    if (formUpdateCalled) {
+        formUpdateCalled.removeEventListener('submit', lidarComAtualizacaoCalled);
+        formUpdateCalled.addEventListener('submit', lidarComAtualizacaoCalled);
+    }
 }
 
 function lidarComAtualizacao(event) {
     event.preventDefault();
     atualizarUsuario(userIdToUpdate);
+}
+
+function lidarComAtualizacaoCalled(event) {
+    event.preventDefault();
+    atualizarChamado(calledIdToUpdate);
+}
+
+function carregarDadosChamado(id) {
+    console.log("Id recebido para carregar dados do chamado:", id);
+    fetch(`/chamados/${id}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro na requisição: '+ response.status);
+            }
+            return response.json();
+        })
+        .then(chamado => {
+            console.log("Dados do chamado:", chamado);
+
+            document.getElementById('titulo').value = chamado.titulo;
+            document.getElementById('descricao').value = chamado.descricao;
+            document.getElementById('solicitante').value = chamado.nomeSolicitante;
+            document.getElementById('atendente').value = chamado.nomeAtendente;
+            document.getElementById('attStatus').value = chamado.nomeStatus;
+        })
+        .catch(error => {
+            console.error('Erro ao carregar dados do chamado:', error);
+        });
 }
 
 function carregarDadosUsuario(id) {
@@ -429,4 +482,47 @@ function atualizarUsuario(id) {
         console.error('Erro ao atualizar o usuário: ', error);
         alert(error.message);
     });
+}
+
+function atualizarChamado(id){
+    console.log("id do chamado que será atualizado:", id);
+
+    const titulo = document.getElementById('titulo').value;
+    const descricao = document.getElementById('descricao').value;
+    const solicitante = document.getElementById('solicitante').value;
+    const atendente = document.getElementById('atendente').value;
+    const status = document.getElementById('attStatus').value;
+
+    console.log("Dados enviados:", {titulo, descricao, solicitante, atendente, status});
+
+    fetch(`/chamados/update/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify( {
+            titulo: titulo,
+            descricao: descricao,
+            solicitante: solicitante,
+            atendente: atendente,
+            nomeStatus: status
+        })
+    })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    throw new Error(text || 'Erro ao atualizar chamado');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Chamado atualizado com sucesso:', data);
+            carregarChamados();
+            document.getElementById('modal-called').style.display = 'none';
+        })
+        .catch(error => {
+            console.error('Erro ao atualizar o usuário: ', error);
+            alert(error.message);
+        });
 }

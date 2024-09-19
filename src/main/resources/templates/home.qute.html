@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
     <link rel="stylesheet" href="/css/home.css">
-    <script src="/js/home.js" async></script>
+    <script src="/js/home.js"></script>
 </head>
 <body>
 <header>
@@ -13,56 +13,93 @@
         <button class="menu-btn">☰</button>
         <img src="/images/logo.png" alt="Logo" class="logo">
         <div class="profile">
-            <div class="profile-initials">
-                MG
+            <div class="profile-initials" id="profile-initials">
+
+            </div>
+            <div id="logout-menu" class="logout-menu" style="display: none;">
+                <button id="logout-btn">Logout</button>
             </div>
         </div>
     </div>
 </header>
 
 <main>
-    <section class="filters-section">
-        <ul>
-            <div class="filter-buttons">
-                <button id="open-called">+</button>
-                <div class="search-box">
-                    <input type="text" id="search-id" placeholder="Pesquisar Chamado">
-                    <button id="search-button">🔍</button>
+    <div class="called-area">
+        <section class="filters-section">
+            <ul>
+                <h2>Área de Chamados</h2>
+            </ul>
+            <ul>
+                <div class="filter-buttons">
+                    <button id="open-called">+</button>
+                    <div class="search-box">
+                        <input type="text" class="search-class" placeholder="Pesquisar Chamado">
+                        <button id="search-button">🔍</button>
+                    </div>
                 </div>
-            </div>
-        </ul>
-        <ul>
-            <div class="filter-options">
-                <select>
-                    <option selected>Características - Status</option>
-                    <option>Abertos</option>
-                    <option>Pendentes</option>
-                    <option>Solucionados</option>
-                </select>
-                <select>
-                    <option selected>Não solucionados</option>
-                    <option>Solucionados</option>
-                </select>
-            </div>
-        </ul>
-    </section>
+            </ul>
+            <ul>
+                <div class="filter-options">
+                    <select>
+                        <option selected>Características - Status</option>
+                        <option>Abertos</option>
+                        <option>Pendentes</option>
+                        <option>Solucionados</option>
+                    </select>
+                    <select>
+                        <option selected>Não solucionados</option>
+                        <option>Solucionados</option>
+                    </select>
+                </div>
+            </ul>
+        </section>
+        <section class="results-section" id="called-results">
+            <div id="called-list">
 
-    <section class="results-section">
-        <div class="result-item">
-            <p>Nenhum item encontrado</p>
-        </div>
-    </section>
+            </div>
+            <div class="result-item">
+                <p>Nenhum item encontrado</p>
+            </div>
+        </section>
+    </div>
 </main>
-<div id="myModal" class="modal">
+<div id="modal-called" class="modal">
     <div class="modal-content">
-        <span class="close">&times</span>
-        <h2 id="model-title">Cadastro de Chamados</h2>
-        <form>
+        <span class="close">&times;</span>
+        <h2 class="model-title">Cadastro de Chamados</h2>
+        <div id="message" style="display: none"></div>
+        <form method="POST" action="/chamados" id="cadastroChamadosForm">
             <label for="title">Título:</label><br>
-            <input type="text" id="title" name="title"><br><br>
+            <input type="text" id="title" name="titulo" required><br><br>
             <label for="description">Descrição:</label><br>
-            <textarea id="description" name="description" placeholder="Informe qual o problema está enfrentando"></textarea><br><br>
-            <button type="submit" id="send-call">Enviar</button>
+            <textarea id="description" name="descricao" placeholder="Informe qual o problema está enfrentando" required></textarea><br><br>
+            <button type="submit" class="button-generic">Enviar</button>
+        </form>
+    </div>
+</div>
+<div id="modal-update" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 class="model-title">Chamado</h2>
+        <div id="message" style="display: none"></div>
+        <form id="update-chamados-form">
+            <label for="titulo">Título:</label><br>
+            <p id="titulo"></p><br><br>
+            <label for="descricao">Descrição:</label><br>
+            <p id="descricao"></p><br><br>
+            <label for="solicitante">Aberto por:</label><br>
+            <p id="solicitante"></p><br><br>
+            <label for="atendente">Atribuído à:</label><br>
+            <p id="atendente"></p><br><br>
+            <label for="status">Status:</label><br>
+            <select id="attStatus">
+                <option value="Aberto">🟢 Aberto</option>
+                <option value="Em atendimento">🔵 Em atendimento</option>
+                <option value="Pendente">🟡 Pendente</option>
+                <option value="Solucionado">🔴 Solucionado</option>
+                <option value="Fechado">⚫ Fechado</option>
+            </select>
+            <button type="submit" class="button-generic">Salvar</button>
         </form>
     </div>
 </div>

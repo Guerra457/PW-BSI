@@ -134,6 +134,19 @@ public class Chamados {
         }
     }
 
+    @GET
+    @Path("/meus-chamados")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response listarMeusChamados(){
+        try {
+            List<ChamadoDTO> chamados = chamadoBO.listarChamadosPorUsuario();
+            return Response.ok(chamados).build();
+        } catch (Exception e) {
+            LOG.error("Erro ao listar chamados do usuário", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Erro ao listar chamados").build();
+        }
+    }
+
     private ChamadoDTO toDTO(Chamado chamado) {
         ChamadoDTO dto = new ChamadoDTO();
         dto.setIdChamado(chamado.getIdChamado());

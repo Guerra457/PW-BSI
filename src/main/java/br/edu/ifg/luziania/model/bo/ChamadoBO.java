@@ -6,11 +6,14 @@ import br.edu.ifg.luziania.model.dto.ChamadoDTO;
 import br.edu.ifg.luziania.model.entity.Chamado;
 import br.edu.ifg.luziania.model.entity.Status;
 import br.edu.ifg.luziania.model.entity.Usuario;
+import br.edu.ifg.luziania.model.util.Sessao;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.jboss.logging.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class ChamadoBO {
@@ -21,6 +24,9 @@ public class ChamadoBO {
 
     @Inject
     private UsuarioDAO usuarioDAO;
+
+    @Inject
+    private Sessao sessao;
 
     public Chamado cadastrarChamado(ChamadoDTO chamadoDTO, Usuario usuarioLogado) throws Exception {
 
@@ -54,10 +60,33 @@ public class ChamadoBO {
     }
 
     public List<ChamadoDTO> listarChamados() {
-        LOG.info("Chmando o método listarChamados");
+        LOG.info("Chamando o método listarChamados");
 
         List<Chamado> chamados = chamadoDAO.listarTodos();
         return chamados.stream().map(this::toDTO).toList();
+    }
+
+    public List<ChamadoDTO> listarChamadosPorUsuario() {
+        LOG.info("Chamando o método ListarChamadosPorUsuario");
+
+        Usuario usuarioLogado = sessao.getUsuario();
+        if (usuarioLogado == null) {
+            throw new IllegalStateException("Usuário não está logado");
+        }
+
+        int idUsuario = usuarioLogado.getIdUsuario();
+        List<Chamado> chamadosSolicitante = chamadoDAO.buscarPorSolicitante(idUsuario);
+        List<Chamado> chamadosAtendente = chamadoDAO.buscarPorAtendente(idUsuario);
+
+        List<Chamado> todosChamados = new ArrayList<>();
+        todosChamados.addAll(chamadosSolicitante);
+        todosChamados.addAll(chamadosAtendente);
+
+        List<ChamadoDTO> chamadosDTO = todosChamados.stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+
+        return chamadosDTO;
     }
 
 
